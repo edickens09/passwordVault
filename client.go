@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net"
 	"os"
-	"strings"
 	"io"
 )
 
@@ -23,14 +22,6 @@ func main() {
 	}
 
 	fmt.Fprintf(c, "Version 0.001\n")
-	/*
-	userInput := bufio.NewReader(os.Stdin)
-	fmt.Print("Username: ")
-	username, _ := userInput.ReadString('\n')
-
-	fmt.Println(username)
-	fmt.Fprintf(c, username + "\n")
-	*/
 
 	handshakeAnswer, err := bufio.NewReader(c).ReadString('\n')
 	if err != nil {
@@ -45,16 +36,26 @@ func main() {
 	for {
 		reader := bufio.NewReader(os.Stdin)
 		fmt.Print(">> ")
-		text, _ := reader.ReadString('\n')
-		fmt.Fprintf(c, text+"\n")
 
-		message, _ := bufio.NewReader(c).ReadString('\n')
-		fmt.Print("->: " + message)
-		if strings.TrimSpace(string(text)) == "STOP" {
+		text, _ := reader.ReadString('\n')
+
+		switch text {
+		
+		case "STOP":
 			fmt.Println("TCP client exiting...")
 			return
+
+		default:
+			fmt.Fprintf(c, text + "\n")
+			message, err := bufio.NewReader(c).ReadString('\n')
+			if err != nil {
+				if err == io.EOF {
+					fmt.Println("Error closing connection")
+					return
+				}
+			}
+			fmt.Println("->: " + message)			
 		}
 	}
-
 }
 

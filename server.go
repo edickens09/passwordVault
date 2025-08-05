@@ -5,11 +5,8 @@ import (
 	"fmt"
 	"net"
 	"os"
-	"strconv"
 	"strings"
 )
-
-var count = 0
 
 func HandleConnection(c net.Conn) {
 
@@ -22,17 +19,18 @@ func HandleConnection(c net.Conn) {
 	if !scanner.Scan() {
 		return
 	}
-	
+	//version handshake 	
 	handshakeLine := scanner.Text()
 	if handshakeLine != "Version 0.001" {
-		c.Write([]byte(string("Sorry wrong answer")))
-		fmt.Println("This is wrong closing connection")
+		c.Write([]byte(string("Incompatible client. Closing connection")))
+		fmt.Println("Incompatible client. Closing connection")
 		return
 	}
 	
 	fmt.Println("handshake accepted")
 	c.Write([]byte(string("handshake accepted\n")))
-
+	
+	// continuous handling of incoming packets
 	for {
 		netData, err := bufio.NewReader(c).ReadString('\n')
 		if err != nil {
@@ -60,8 +58,7 @@ func HandleConnection(c net.Conn) {
 
 		default:
 			fmt.Println(temp)
-			counter := strconv.Itoa(count) + "\n"
-			c.Write([]byte(string(counter)))
+			c.Write([]byte(string("Unknown Command\n")))
 		}
 	}
 }
@@ -88,7 +85,6 @@ func main() {
 		}
 
 		go HandleConnection(c)
-		count++
 	}
 
 }

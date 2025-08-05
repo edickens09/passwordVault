@@ -11,11 +11,11 @@ import (
 func main() {
 	arguments := os.Args
 	if len(arguments) == 1 {
-		fmt.Println("Please provide host:port.")
+		fmt.Println("Please provide host.")
 	}
 
 	CONNECT := arguments[1]
-	c, err := net.Dial("tcp", CONNECT)
+	c, err := net.Dial("tcp", CONNECT + ":19865")
 	if err != nil {
 		fmt.Println(err)
 		return

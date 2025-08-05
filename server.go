@@ -42,14 +42,14 @@ func HandleConnection(c net.Conn) {
 
 		switch temp {
 
-		case "TEST":
-			fmt.Println("Reading from a file")
-			secretInfo, err := os.ReadFile("Secret Info.txt")
-			if err != nil {
-				fmt.Println(err)
-			}
+		case "CREATE":
+			fmt.Println("Creating New Entry")
+			HandleCreate(c, "PasswordFile.data")
+			continue
 
-			c.Write([]byte(string(secretInfo)))
+		case "RETRIEVE":
+			fmt.Println("Sending Entry")
+			HandleRetrieve(c)
 			continue
 
 		case "STOP":
@@ -63,13 +63,22 @@ func HandleConnection(c net.Conn) {
 	}
 }
 
+func HandleRetrieve(c net.Conn) {
+	c.Write([]byte(string("Retrieve is working to this point\n")))
+}
+
+func HandleCreate(c net.Conn, file string){
+	// need to replace this with one that creates an entry in a file that starts with the service name, then username, then encrypted password
+	c.Write([]byte(string("Create is working to this point\n")))
+}
+
 func main() {
 	arguments := os.Args
 	if len(arguments) == 1 {
 		fmt.Println("Please provide a port number!")
 	}
 	
-	PORT := ":" + arguments[1]
+	PORT := ":19865"
 	l, err := net.Listen("tcp4", PORT)
 	if err != nil {
 		fmt.Println(err)

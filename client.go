@@ -6,7 +6,30 @@ import (
 	"net"
 	"os"
 	"io"
+	"errors"
 )
+
+func HandleAuthentication(c net.Conn) error {
+
+	authenticationKey := "Authentication Key\n"
+	fmt.Println("Working here")
+	fmt.Fprintf(c, authenticationKey)
+	fmt.Println(authenticationKey)
+	fmt.Println("Working here too")
+
+	authenticationAttempt, err := bufio.NewReader(c).ReadString('\n')
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Working here 3")
+	
+	if authenticationAttempt != "Success" {
+		return errors.New(authenticationAttempt)
+	}else{
+		return nil
+	}
+}
 
 func main() {
 	arguments := os.Args
@@ -20,6 +43,13 @@ func main() {
 		fmt.Println(err)
 		return
 	}
+
+	if err := HandleAuthentication(c); err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println("Authentication Successful")
 
 	fmt.Fprintf(c, "Version 0.001\n")
 
@@ -37,16 +67,16 @@ func main() {
 		reader := bufio.NewReader(os.Stdin)
 		fmt.Print(">> ")
 
-		text, _ := reader.ReadString('\n')
+		command, _ := reader.ReadString('\n')
 
-		switch text {
+		switch command {
 		
 		case "STOP":
 			fmt.Println("TCP client exiting...")
 			return
 
 		default:
-			fmt.Fprintf(c, text + "\n")
+			fmt.Fprintf(c, command + "\n")
 			message, err := bufio.NewReader(c).ReadString('\n')
 			if err != nil {
 				if err == io.EOF {

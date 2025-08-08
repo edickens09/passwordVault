@@ -9,17 +9,15 @@ import (
 	"errors"
 )
 
-func HandleAuthentication(c net.Conn) error {
-	fmt.Println("Made it to the Authentication step successfully")
+func HandleAuthentication(conn net.Conn) error {
 	authenticationKey := "Authentication Key"
 
 	//scanner, _ := bufio.NewReader(c).ReadString('\n')
-	scanner := bufio.NewScanner(c)
-	fmt.Println(scanner)
+	scanner := bufio.NewScanner(conn)
 
-/*	if !scanner.Scan() {
+	if !scanner.Scan() {
 		return errors.New("Auth Error\n")
-	}*/
+	}
 
 
 	authenticationAttempt := scanner.Text()
@@ -46,7 +44,6 @@ func HandleConnection(c net.Conn) {
 	
 	// starting communication for handshake
 	scanner := bufio.NewScanner(c)
-	fmt.Println(scanner)
 
 	//testing if scanner does exist should probably expand upon this later
 	if !scanner.Scan() {

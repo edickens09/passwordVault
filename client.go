@@ -12,23 +12,35 @@ import (
 func HandleAuthentication(c net.Conn) error {
 
 	authenticationKey := "Authentication Key\n"
-	fmt.Println("Working here")
 	fmt.Fprintf(c, authenticationKey)
-	fmt.Println(authenticationKey)
-	fmt.Println("Working here too")
 
 	authenticationAttempt, err := bufio.NewReader(c).ReadString('\n')
 	if err != nil {
 		return err
 	}
 
-	fmt.Println("Working here 3")
-	
-	if authenticationAttempt != "Success" {
+	if authenticationAttempt != "Success\n" {
 		return errors.New(authenticationAttempt)
 	}else{
+		fmt.Println("Authentication Successful")
 		return nil
 	}
+}
+
+func HandleHandshake(conn net.Conn) error {
+	version := "Version 0.001\n"
+	fmt.Fprintf(conn, version)
+
+	handshakeAnswer, err := bufio.NewReader(conn). ReadString('\n')
+	if err != nil {
+		if err == io.EOF {
+			fmt.Println("Connection closed. Exiting")
+			return err
+		}
+	}
+
+	fmt.Println(handshakeAnswer)
+	return nil
 }
 
 func main() {
@@ -49,18 +61,10 @@ func main() {
 		return
 	}
 
-	fmt.Println("Authentication Successful")
-
-	fmt.Fprintf(c, "Version 0.001\n")
-
-	handshakeAnswer, err := bufio.NewReader(c).ReadString('\n')
-	if err != nil {
-		if err == io.EOF {
-			fmt.Println("Connection closed. Exiting")
-			return
-		}
+	if err := HandleHandshake(c); err != nil {
+		fmt.Println(err)
+		return
 	}
-	fmt.Println(handshakeAnswer)
 
 
 	for {

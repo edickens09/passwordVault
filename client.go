@@ -7,7 +7,19 @@ import (
 	"os"
 	"io"
 	"errors"
+	"log"
 )
+
+type Version struct{
+	//Major Verison number will break backwards compatibility
+	Major uint8
+	//Minor Version has new features or commands should mostly work
+	Minor uint16
+	//Patch Version, should only have bug fixes and shouldn't break
+	Patch uint16
+}
+
+//var protocolVersion = Version{Major:0, Minor:1, Patch:0}
 
 func HandleAuthentication(c net.Conn) error {
 
@@ -33,6 +45,7 @@ func HandleHandshake(conn net.Conn) error {
 
 	handshakeAnswer, err := bufio.NewReader(conn). ReadString('\n')
 	if err != nil {
+		log.Println(err)
 		if err == io.EOF {
 			fmt.Println("Connection closed. Exiting")
 			return err
@@ -43,31 +56,73 @@ func HandleHandshake(conn net.Conn) error {
 	return nil
 }
 
+func HandleCommands(conn net.Conn) {
+	for {
+		reader := bufio.NewReader(os.Stdin)
+		fmt.Print(">> ")
+
+		command, err := reader.ReadString('\n')
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		switch command {
+
+			case "STOP\n":
+			fmt.Println("TCP client exit...")
+			fmt.Fprintf(conn, command)
+			return
+
+
+			default:
+			fmt.Fprintf(conn, command)
+			message, err := bufio.NewReader(conn).ReadString('\n')
+			if err != nil {
+				log.Println(err)
+				if err == io.EOF {
+					fmt.Println("Error closing connection")
+					return
+				}
+			}
+			
+			fmt.Println("-> " + message)
+		}
+	}	
+}
+
 func main() {
 	arguments := os.Args
 	if len(arguments) == 1 {
 		fmt.Println("Please provide host.")
 	}
 
+	file, err := os.OpenFile("logs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
+		fmt.Println("Log File Error")
+	}
+
+	log.SetOutput(file)
+
 	CONNECT := arguments[1]
 	c, err := net.Dial("tcp", CONNECT + ":19865")
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 
 	if err := HandleAuthentication(c); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 
 	if err := HandleHandshake(c); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 
-
-	for {
+	HandleCommands(c)
+	/*for {
 		reader := bufio.NewReader(os.Stdin)
 		fmt.Print(">> ")
 
@@ -75,11 +130,11 @@ func main() {
 
 		switch command {
 		
-		case "STOP":
+			case "STOP":
 			fmt.Println("TCP client exiting...")
 			return
 
-		default:
+			default:
 			fmt.Fprintf(c, command + "\n")
 			message, err := bufio.NewReader(c).ReadString('\n')
 			if err != nil {
@@ -88,8 +143,8 @@ func main() {
 					return
 				}
 			}
-			fmt.Println("->: " + message)			
+			fmt.Println("->: " + message)
 		}
-	}
+	}*/
 }
 

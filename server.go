@@ -4,11 +4,23 @@ import (
 	"bufio"
 	"fmt"
 	"net"
-//	"os"
+	"os"
 	"strings"
 	"errors"
+	"log"
 )
 
+
+type Version struct {
+	//Major version will break backwards compaibility
+	Major uint8
+	Minor uint16
+	Patch uint16
+}
+
+//var protocolVersion = Version{Major:0, Minor:1, Patch:0}
+
+//Handles anything for the initial Authentication
 func HandleAuthentication(conn net.Conn) error {
 	authenticationKey := "Authentication Key"
 
@@ -21,12 +33,27 @@ func HandleAuthentication(conn net.Conn) error {
 
 
 	authenticationAttempt := scanner.Text()
-	fmt.Println(authenticationAttempt)
-
 
 	if authenticationAttempt != authenticationKey {
 		return errors.New("Auth Error\n")
 	}
+	return nil
+}
+
+//Handles anything for the handshake
+func HandleHandshake(conn net.Conn) error {
+	scanner := bufio.NewScanner(conn)
+
+	if !scanner.Scan() {
+		return errors.New("Connection Error\n")
+	}
+
+	handshakeLine := scanner.Text()
+	if handshakeLine != "Version 0.001" {
+		
+		return errors.New("Version handshake Error\n")
+	}
+
 	return nil
 }
 
@@ -35,26 +62,16 @@ func HandleConnection(c net.Conn) {
 	defer c.Close()
 
 	if err := HandleAuthentication(c); err != nil {
-		fmt.Print(err)
+		log.Print(err)
 		c.Write([]byte(err.Error()))
 		return
 	}
 
 	c.Write([]byte("Success\n"))
 	
-	// starting communication for handshake
-	scanner := bufio.NewScanner(c)
-
-	//testing if scanner does exist should probably expand upon this later
-	if !scanner.Scan() {
-		return
-	}
-	//version handshake 	
-	handshakeLine := scanner.Text()
-	fmt.Println(handshakeLine)
-	if handshakeLine != "Version 0.001" {
-		c.Write([]byte("Incompatible client. Closing connection\n"))
-		fmt.Println("Incompatible client. Closing connection")
+	if err := HandleHandshake(c); err != nil {
+		log.Println(err)
+		c.Write([]byte(err.Error()))
 		return
 	}
 	
@@ -65,7 +82,7 @@ func HandleConnection(c net.Conn) {
 	for {
 		netData, err := bufio.NewReader(c).ReadString('\n')
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			return
 		}
 
@@ -116,10 +133,17 @@ func HandleList(c net.Conn) {
 
 func main() {
 
+	file, err := os.OpenFile("logs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
+		fmt.Println("Error with log file")
+	}
+
+	log.SetOutput(file)
+
 	PORT := ":19865"
 	l, err := net.Listen("tcp4", PORT)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 	defer l.Close()
@@ -127,7 +151,7 @@ func main() {
 	for {
 		c, err := l.Accept()
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			return
 		}
 

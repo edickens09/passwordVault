@@ -32,3 +32,5 @@ go.work.sum
 # .vscode/
 #log file
 logs.txt
+clientLogs.txt
+serverLogs.txt

@@ -133,12 +133,12 @@ func HandleList(c net.Conn) {
 
 func main() {
 
-	file, err := os.OpenFile("serverLogs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	logFile, err := os.OpenFile("serverLogs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		fmt.Println("Error with log file")
 	}
 
-	log.SetOutput(file)
+	log.SetOutput(logFile)
 
 	PORT := ":19865"
 	l, err := net.Listen("tcp4", PORT)

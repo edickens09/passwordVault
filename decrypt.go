@@ -1,32 +1,39 @@
-package main
+package decrypt
 
 import (
 	"crypto/aes"
 	"crypto/cipher"
 	"fmt"
-	"io/ioutil"
+	"os"
+	"log"
 )
 
 func main() {
 	fmt.Println("Decryption Program v.0.00001")
 
-	key, err := ioutil.ReadFile("keyFile.data")
+	logFile, err := os.OpenFile("decryptionLog.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Error with log file")
 	}
-	ciphertext, err := ioutil.ReadFile("myfile.data")
+
+	log.SetOutput(logFile)
+	key, err := os.ReadFile("keyFile.data")
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
+	}
+	ciphertext, err := os.ReadFile("myfile.data")
+	if err != nil {
+		log.Println(err)
 	}
 
 	c, err := aes.NewCipher(key)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	gcm, err := cipher.NewGCM(c)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	nonceSize := gcm.NonceSize()
@@ -38,7 +45,7 @@ func main() {
 
 	plaintext, err := gcm.Open(nil, nonce, ciphertext, nil)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	fmt.Println(string(plaintext))

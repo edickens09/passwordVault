@@ -1,10 +1,11 @@
-package database
+package main
 
 import(
-	"fmt"
+//	"fmt"
 	"os"
 	"errors"
 	"bufio"
+	"strings"
 )
 
 type Database struct {
@@ -13,7 +14,7 @@ type Database struct {
 	password string
 }
 
-func RetrieveData(serviceName string, vault Database) error {
+/*func RetrieveData(serviceName string, vault Database) error {
 	file, err := os.OpenFile("vault.data",)
 	if err != nil {
 		return errors.New("Vault error\n")
@@ -24,17 +25,18 @@ func RetrieveData(serviceName string, vault Database) error {
 		return errors.New("Error with Vault\n")
 	}
 
-}
+}*/
 
 func ParseVault(name string, vault Database) ([]string, error) {
 
-	file, err := os.OpenFile("vault.data")
+	file, err := os.Open("vault.data")
 	if err != nil {
 		return nil, errors.New("Error with vault File")
 	}
-	scanner, err := bufio.NewScanner(file)
-	if err != nil {
-		return nil, errors.New("Vault error\n")
+
+	scanner := bufio.NewScanner(file)
+	if !scanner.Scan() {
+		return nil, errors.New("Error reading vault")
 	}
 
 	for scanner.Scan() {
@@ -43,9 +45,14 @@ func ParseVault(name string, vault Database) ([]string, error) {
 
 		if items[0] == name {
 			return items, nil
-		} else {
-			return "Service Name not found", nil
-		}
+		}	
 	}
 
+	return nil, nil
+
+}
+
+func (data Database) TestImport() string{
+	string := "This is only here to test the import is working"
+	return string
 }

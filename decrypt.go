@@ -1,4 +1,4 @@
-package decrypt
+package main
 
 import (
 	"crypto/aes"

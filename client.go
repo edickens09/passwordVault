@@ -8,8 +8,8 @@ import (
 	"io"
 	"errors"
 	"log"
-)
 
+)
 type Version struct{
 	//Major Verison number will break backwards compatibility
 	Major uint8
@@ -57,6 +57,8 @@ func HandleHandshake(conn net.Conn) error {
 }
 
 func HandleCommands(conn net.Conn) {
+
+	var data = Database{serviceName:"This", username:"is", password:"test"}
 	for {
 		reader := bufio.NewReader(os.Stdin)
 		fmt.Print(">> ")
@@ -69,13 +71,18 @@ func HandleCommands(conn net.Conn) {
 
 		switch command {
 
-			case "STOP\n":
+		case "STOP\n":
 			fmt.Println("TCP client exit...")
 			fmt.Fprintf(conn, command)
 			return
 
+		case "TEST\n":
+			test := data.TestImport()
+			fmt.Println(test)
+			continue
 
-			default:
+
+		default:
 			fmt.Fprintf(conn, command)
 			message, err := bufio.NewReader(conn).ReadString('\n')
 			if err != nil {

@@ -133,7 +133,7 @@ func HandleList(c net.Conn) {
 
 func main() {
 
-	logFile, err := os.OpenFile("serverLogs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	logFile, err := os.OpenFile("logs/serverLogs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		fmt.Println("Error with log file")
 	}

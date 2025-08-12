@@ -34,3 +34,5 @@ go.work.sum
 logs.txt
 clientLogs.txt
 serverLogs.txt
+vault.data
+logs/

@@ -14,20 +14,7 @@ type Database struct {
 	password string
 }
 
-/*func RetrieveData(serviceName string, vault Database) error {
-	file, err := os.OpenFile("vault.data",)
-	if err != nil {
-		return errors.New("Vault error\n")
-	}
-	
-	data, err := ParseVault(serviceName, vault)
-	if err != nil {
-		return errors.New("Error with Vault\n")
-	}
-
-}*/
-
-func ParseVault(name string, vault Database) ([]string, error) {
+func (data Database) ParseVault(name string) ([]string, error) {
 
 	file, err := os.Open("vault.data")
 	if err != nil {

@@ -8,6 +8,7 @@ import (
 	"io"
 	"errors"
 	"log"
+	"strings"
 
 )
 type Version struct{
@@ -58,7 +59,9 @@ func HandleHandshake(conn net.Conn) error {
 
 func HandleCommands(conn net.Conn) {
 
-	var data = Database{serviceName:"This", username:"is", password:"test"}
+	//This feels wrong, I need to initalize the database, but I don't think this is the correct way to do it
+	//Should I look at a different way to do this?
+	var data = Database{}
 	for {
 		reader := bufio.NewReader(os.Stdin)
 		fmt.Print(">> ")
@@ -76,9 +79,10 @@ func HandleCommands(conn net.Conn) {
 			fmt.Fprintf(conn, command)
 			return
 
-		case "TEST\n":
-			test := data.TestImport()
-			fmt.Println(test)
+		case "RETRIEVE\n":
+			item := HandleRetrieve(data)
+
+			fmt.Println(item)
 			continue
 
 
@@ -98,13 +102,35 @@ func HandleCommands(conn net.Conn) {
 	}	
 }
 
+func HandleRetrieve(vault Database) [] string {
+
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Println("Service Name: ")
+	serviceName, err := reader.ReadString('\n')
+	if err != nil {
+		log.Println(err)
+	}
+	serviceName = strings.TrimSuffix(serviceName, "\n")
+
+	data, err := vault.ParseVault(serviceName)
+	if err != nil {
+		log.Println(err)
+	}
+
+	if data == nil {
+		fmt.Println("Vault Entry not found")
+	}
+
+	return data
+}
+
 func main() {
 	arguments := os.Args
 	if len(arguments) == 1 {
 		fmt.Println("Please provide host.")
 	}
 
-	file, err := os.OpenFile("clientLogs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	file, err := os.OpenFile("logs/clientLogs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		fmt.Println("Log File Error")
 	}
@@ -129,29 +155,5 @@ func main() {
 	}
 
 	HandleCommands(c)
-	/*for {
-		reader := bufio.NewReader(os.Stdin)
-		fmt.Print(">> ")
-
-		command, _ := reader.ReadString('\n')
-
-		switch command {
-		
-			case "STOP":
-			fmt.Println("TCP client exiting...")
-			return
-
-			default:
-			fmt.Fprintf(c, command + "\n")
-			message, err := bufio.NewReader(c).ReadString('\n')
-			if err != nil {
-				if err == io.EOF {
-					fmt.Println("Error closing connection")
-					return
-				}
-			}
-			fmt.Println("->: " + message)
-		}
-	}*/
 }
 

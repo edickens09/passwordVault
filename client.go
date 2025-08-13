@@ -74,6 +74,9 @@ func HandleCommands(conn net.Conn) {
 
 		switch command {
 
+		case "CREATE\n":
+			HandleCreate(data)
+
 		case "STOP\n":
 			fmt.Println("TCP client exit...")
 			fmt.Fprintf(conn, command)
@@ -106,10 +109,12 @@ func HandleRetrieve(vault Database) [] string {
 
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Println("Service Name: ")
+
 	serviceName, err := reader.ReadString('\n')
 	if err != nil {
 		log.Println(err)
 	}
+
 	serviceName = strings.TrimSuffix(serviceName, "\n")
 
 	data, err := vault.ParseVault(serviceName)
@@ -122,6 +127,23 @@ func HandleRetrieve(vault Database) [] string {
 	}
 
 	return data
+}
+
+func HandleCreate(vault Database) {
+	
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Println("Service Name: ")
+
+	serviceName, err := reader.ReadString('\n')
+	if err != nil {
+		log.Println(err)
+	}
+
+	serviceName = strings.TrimSuffix(serviceName, "\n")
+
+	if err := vault.CreateEntry(serviceName); err != nil {
+		log.Println(err)
+	}
 }
 
 func main() {

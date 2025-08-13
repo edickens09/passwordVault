@@ -1,7 +1,7 @@
 package main
 
 import(
-//	"fmt"
+	"fmt"
 	"os"
 	"errors"
 	"bufio"
@@ -21,6 +21,8 @@ func (data Database) ParseVault(name string) ([]string, error) {
 		return nil, errors.New("Error with vault File")
 	}
 
+	defer file.Close()
+
 	scanner := bufio.NewScanner(file)
 	if !scanner.Scan() {
 		return nil, errors.New("Error reading vault")
@@ -39,7 +41,40 @@ func (data Database) ParseVault(name string) ([]string, error) {
 
 }
 
-func (data Database) TestImport() string{
-	string := "This is only here to test the import is working"
-	return string
+func (data Database) CreateEntry(name string) error {
+
+	fmt.Printf("What's the username for %v\n", name)
+	reader := bufio.NewReader(os.Stdin)
+
+	username, err := reader.ReadString('\n')
+	if err != nil {
+		return errors.New("Error getting username")
+	}
+
+	username = strings.TrimSuffix(username, "\n")
+
+	fmt.Printf("What's the password for %v\n", name)
+	reader = bufio.NewReader(os.Stdin)
+
+	password, err := reader.ReadString('\n')
+	if err != nil {
+		return errors.New("Error getting password")
+	}
+
+	password = strings.TrimSuffix(password, "\n")
+	
+	string := fmt.Sprintf("%v,%v,%v\n", name,username,password)
+	
+	file, err := os.OpenFile("vault.data", os.O_APPEND|os.O_WRONLY, 0)
+	if err != nil {
+		return errors.New("Error opening file for writing")
+	}
+	
+	defer file.Close()
+
+	file.WriteString(string)
+
+	return nil
+
+
 }

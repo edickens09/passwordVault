@@ -8,6 +8,7 @@ import (
 	"strings"
 	"errors"
 	"log"
+	"encoding/binary"
 )
 
 
@@ -17,8 +18,6 @@ type Version struct {
 	Minor uint16
 	Patch uint16
 }
-
-//var protocolVersion = Version{Major:0, Minor:1, Patch:0}
 
 //Handles anything for the initial Authentication
 func HandleAuthentication(conn net.Conn) error {
@@ -42,16 +41,21 @@ func HandleAuthentication(conn net.Conn) error {
 
 //Handles anything for the handshake
 func HandleHandshake(conn net.Conn) error {
-	scanner := bufio.NewScanner(conn)
 
-	if !scanner.Scan() {
-		return errors.New("Connection Error\n")
+	serverVer := Version{
+		Major:00,
+		Minor:01,
+		Patch:01,
+	}
+	var clientVer Version
+
+	err := binary.Read(conn, binary.BigEndian, &clientVer )
+	if err != nil {
+		return errors.New("Version Connection Error\n")
 	}
 
-	handshakeLine := scanner.Text()
-	if handshakeLine != "Version 0.001" {
-		
-		return errors.New("Version handshake Error\n")
+	if serverVer != clientVer {
+		return errors.New("Version Compatibility Error\n")
 	}
 
 	return nil

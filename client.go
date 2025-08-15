@@ -9,18 +9,17 @@ import (
 	"errors"
 	"log"
 	"strings"
+	"encoding/binary"
 
 )
 type Version struct{
 	//Major Verison number will break backwards compatibility
 	Major uint8
-	//Minor Version has new features or commands should mostly work
+	//Minor Version has new features or commands, server may support multiple version
 	Minor uint16
 	//Patch Version, should only have bug fixes and shouldn't break
 	Patch uint16
 }
-
-//var protocolVersion = Version{Major:0, Minor:1, Patch:0}
 
 func HandleAuthentication(c net.Conn) error {
 
@@ -41,8 +40,14 @@ func HandleAuthentication(c net.Conn) error {
 }
 
 func HandleHandshake(conn net.Conn) error {
-	version := "Version 0.001\n"
-	fmt.Fprintf(conn, version)
+
+	ver := Version {
+		Major:00,
+		Minor:01,
+		Patch:01
+	}
+
+	err := binary.Write(conn, binary.BigEndian, ver)
 
 	handshakeAnswer, err := bufio.NewReader(conn). ReadString('\n')
 	if err != nil {

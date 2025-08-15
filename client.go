@@ -41,13 +41,13 @@ func HandleAuthentication(c net.Conn) error {
 
 func HandleHandshake(conn net.Conn) error {
 
-	ver := Version {
+	clientVer := Version {
 		Major:00,
 		Minor:01,
 		Patch:01
 	}
 
-	err := binary.Write(conn, binary.BigEndian, ver)
+	err := binary.Write(conn, binary.BigEndian, clientVer)
 
 	handshakeAnswer, err := bufio.NewReader(conn). ReadString('\n')
 	if err != nil {

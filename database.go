@@ -6,7 +6,6 @@ import(
 	"errors"
 	"bufio"
 	"strings"
-	"encoding/binary"
 )
 
 type Database struct {
@@ -64,8 +63,6 @@ func (data Database) CreateEntry(name string) error {
 
 	password = strings.TrimSuffix(password, "\n")
 	
-	//string := fmt.Sprintf("{%v,%v,%v}\n", name,username,password)
-
 	data.serviceName = name
 	data.username = username
 	data.password = password
@@ -76,8 +73,8 @@ func (data Database) CreateEntry(name string) error {
 	}
 	
 	defer file.Close()
-
-	err = binary.Write(file, binary.LittleEndian, data)
+	
+	fmt.Fprintln(file, data)
 	if err != nil {
 		return errors.New(err.Error())
 	}

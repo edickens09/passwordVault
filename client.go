@@ -11,6 +11,8 @@ import (
 	"strings"
 	"encoding/binary"
 
+	"github.com/edickens09/passwordVault/database"
+
 )
 type Version struct{
 	//Major Verison number will break backwards compatibility

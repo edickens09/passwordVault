@@ -1,4 +1,4 @@
-package github.com/edickens09/passwordVault/database
+package database
 
 import(
 	"fmt"

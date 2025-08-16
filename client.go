@@ -68,7 +68,7 @@ func HandleCommands(conn net.Conn) {
 
 	//This feels wrong, I need to initalize the database, but I don't think this is the correct way to do it
 	//Should I look at a different way to do this?
-	var data = Database{}
+	var data = database.Database{}
 	for {
 		reader := bufio.NewReader(os.Stdin)
 		fmt.Print(">> ")
@@ -112,7 +112,7 @@ func HandleCommands(conn net.Conn) {
 	}	
 }
 
-func HandleRetrieve(vault Database) [] string {
+func HandleRetrieve(vault database.Database) [] string {
 
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Println("Service Name: ")
@@ -136,7 +136,7 @@ func HandleRetrieve(vault Database) [] string {
 	return data
 }
 
-func HandleCreate(vault Database) {
+func HandleCreate(vault database.Database) {
 	
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Println("Service Name: ")

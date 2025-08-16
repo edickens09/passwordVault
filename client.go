@@ -44,7 +44,7 @@ func HandleHandshake(conn net.Conn) error {
 	clientVer := Version {
 		Major:00,
 		Minor:01,
-		Patch:01
+		Patch:01,
 	}
 
 	err := binary.Write(conn, binary.BigEndian, clientVer)
@@ -168,6 +168,7 @@ func main() {
 	c, err := net.Dial("tcp", CONNECT + ":19865")
 	if err != nil {
 		log.Println(err)
+		fmt.Println(err)
 		return
 	}
 

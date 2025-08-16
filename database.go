@@ -6,6 +6,7 @@ import(
 	"errors"
 	"bufio"
 	"strings"
+	"encoding/binary"
 )
 
 type Database struct {
@@ -30,7 +31,7 @@ func (data Database) ParseVault(name string) ([]string, error) {
 
 	for scanner.Scan() {
 		line := scanner.Text()
-		items := strings.Split(line, ",")
+		items := strings.Split(line, " ")
 
 		if items[0] == name {
 			return items, nil
@@ -63,7 +64,11 @@ func (data Database) CreateEntry(name string) error {
 
 	password = strings.TrimSuffix(password, "\n")
 	
-	string := fmt.Sprintf("%v,%v,%v\n", name,username,password)
+	//string := fmt.Sprintf("{%v,%v,%v}\n", name,username,password)
+
+	data.serviceName = name
+	data.username = username
+	data.password = password
 	
 	file, err := os.OpenFile("vault.data", os.O_APPEND|os.O_WRONLY, 0)
 	if err != nil {
@@ -72,7 +77,10 @@ func (data Database) CreateEntry(name string) error {
 	
 	defer file.Close()
 
-	file.WriteString(string)
+	err = binary.Write(file, binary.LittleEndian, data)
+	if err != nil {
+		return errors.New(err.Error())
+	}
 
 	return nil
 

@@ -96,17 +96,17 @@ func HandleConnection(c net.Conn) {
 
 		case "CREATE":
 			fmt.Println("Creating New Entry")
-			HandleCreate(c, "PasswordFile.data")
+			c.Write([]byte("Create Received\n"))
 			continue
 
 		case "RETRIEVE":
 			fmt.Println("Sending Entry")
-			HandleRetrieve(c)
+			c.Write([]byte("Retrieve Received\n"))
 			continue
 
 		case "LIST":
 			fmt.Println("Sending List")
-			HandleList(c)
+			c.Write([]byte("Here is list working\n"))
 			continue
 
 		case "STOP":
@@ -118,21 +118,6 @@ func HandleConnection(c net.Conn) {
 			c.Write([]byte("Unknown Command\n"))
 		}
 	}
-}
-
-func HandleRetrieve(c net.Conn) {
-	// replace with retriving specific account information
-	c.Write([]byte("Retrieve is working to this point\n"))
-}
-
-func HandleCreate(c net.Conn, file string){
-	// need to replace this with one that creates an entry in a file that starts with the service name, then username, then encrypted password
-	c.Write([]byte("Create is working to this point\n"))
-}
-
-func HandleList(c net.Conn) {
-	// replace with return a list with all account names not user names the name of the service
-	c.Write([]byte("List is working to the point\n"))
 }
 
 func main() {

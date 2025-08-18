@@ -94,16 +94,6 @@ func HandleConnection(c net.Conn) {
 
 		switch temp {
 
-		case "CREATE":
-			fmt.Println("Creating New Entry")
-			c.Write([]byte("Create Received\n"))
-			continue
-
-		case "RETRIEVE":
-			fmt.Println("Sending Entry")
-			c.Write([]byte("Retrieve Received\n"))
-			continue
-
 		case "LIST":
 			fmt.Println("Sending List")
 			c.Write([]byte("Here is list working\n"))

@@ -16,16 +16,16 @@ type Database struct {
 
 func (data Database) ParseVault(name string) ([]string, error) {
 
-	file, err := os.Open("vault.data")
+	file, err := os.Open("../vault.data")
 	if err != nil {
-		return nil, errors.New("Error with vault File")
+		return nil, errors.New("error with vault File")
 	}
 
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
 	if !scanner.Scan() {
-		return nil, errors.New("Error reading vault")
+		return nil, errors.New("error reading vault")
 	}
 
 	for scanner.Scan() {
@@ -48,7 +48,7 @@ func (data Database) CreateEntry(name string) error {
 
 	username, err := reader.ReadString('\n')
 	if err != nil {
-		return errors.New("Error getting username")
+		return errors.New("error getting username")
 	}
 
 	username = strings.TrimSuffix(username, "\n")
@@ -58,7 +58,7 @@ func (data Database) CreateEntry(name string) error {
 
 	password, err := reader.ReadString('\n')
 	if err != nil {
-		return errors.New("Error getting password")
+		return errors.New("error getting password")
 	}
 
 	password = strings.TrimSuffix(password, "\n")
@@ -67,9 +67,9 @@ func (data Database) CreateEntry(name string) error {
 	data.username = username
 	data.password = password
 	
-	file, err := os.OpenFile("vault.data", os.O_APPEND|os.O_WRONLY, 0)
+	file, err := os.OpenFile("../vault.data", os.O_APPEND|os.O_WRONLY, 0)
 	if err != nil {
-		return errors.New("Error opening file for writing")
+		return errors.New("error opening file for writing")
 	}
 	
 	defer file.Close()
@@ -80,6 +80,4 @@ func (data Database) CreateEntry(name string) error {
 	}
 
 	return nil
-
-
 }

@@ -27,14 +27,14 @@ func HandleAuthentication(conn net.Conn) error {
 	scanner := bufio.NewScanner(conn)
 
 	if !scanner.Scan() {
-		return errors.New("Auth Error\n")
+		return errors.New("auth error\n")
 	}
 
 
 	authenticationAttempt := scanner.Text()
 
 	if authenticationAttempt != authenticationKey {
-		return errors.New("Auth Error\n")
+		return errors.New("auth error\n")
 	}
 	return nil
 }

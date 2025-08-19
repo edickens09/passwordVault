@@ -13,7 +13,7 @@ import (
 
 func main() {
 
-	logFile, err := os.ReadFile("encryptionLog.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	logFile, err := os.OpenFile("encryptionLog.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		fmt.Println("Error with log file")
 	}

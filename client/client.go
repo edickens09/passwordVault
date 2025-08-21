@@ -23,6 +23,18 @@ type Version struct{
 	Patch uint16
 }
 
+func Menu() string {
+	
+	reader := bufio.NewReader(os.Stdin)
+
+	fmt.Println("--------MENU--------")
+	fmt.Println("1) Create new Entry")
+	fmt.Println("2) Find specific Entry")
+	fmt.Println("3) List all Entries")
+	fmt.Println(">> "
+
+}
+
 func HandleAuthentication(c net.Conn) error {
 
 	authenticationKey := "Authentication Key\n"

@@ -31,7 +31,36 @@ func Menu() string {
 	fmt.Println("1) Create new Entry")
 	fmt.Println("2) Find specific Entry")
 	fmt.Println("3) List all Entries")
-	fmt.Println(">> "
+	fmt.Println("4) Exit")
+
+	for {
+		fmt.Print(">> ")
+		command, err := reader.ReadString('\n')
+		if err != nil {
+			log.Println(err)
+			return ""
+		}
+
+		switch command {
+
+		case "1\n":
+			return "CREATE"
+	
+		case "2\n":
+			return "RETRIEVE"
+
+		case "3\n": 
+			return "LIST"
+
+		case "4\n":
+			return "STOP"
+
+		default:
+			fmt.Println("That option doesn't exist")
+			continue
+		}
+
+	}
 
 }
 
@@ -82,26 +111,32 @@ func HandleCommands(conn net.Conn) {
 	//Should I look at a different way to do this?
 	var data = database.Database{}
 	for {
-		reader := bufio.NewReader(os.Stdin)
+		/*reader := bufio.NewReader(os.Stdin)
 		fmt.Print(">> ")
 
 		command, err := reader.ReadString('\n')
 		if err != nil {
 			log.Println(err)
 			return
+		}*/
+
+		command := Menu()
+		
+		if command == "" {
+			return
 		}
 
 		switch command {
 
-		case "CREATE\n":
+		case "CREATE":
 			HandleCreate(data)
 
-		case "STOP\n":
+		case "STOP":
 			fmt.Println("TCP client exit...")
 			fmt.Fprintf(conn, command)
 			return
 
-		case "RETRIEVE\n":
+		case "RETRIEVE":
 			item := HandleRetrieve(data)
 
 			fmt.Println(item)

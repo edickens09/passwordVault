@@ -36,3 +36,4 @@ clientLogs.txt
 serverLogs.txt
 vault.data
 logs/
+config.yaml

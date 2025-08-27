@@ -209,6 +209,13 @@ func HandleCreate(vault database.Database) {
 
 func main() {
 
+	file, err := os.OpenFile("logs/clientLogs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
+		fmt.Println("Log File Error")
+	}
+
+	log.SetOutput(file)
+
 	var config Config
 
 	yFile, err := os.ReadFile("config.yaml")
@@ -223,13 +230,6 @@ func main() {
 
 	server := config.Host
 	port := config.Port
-
-	file, err := os.OpenFile("logs/clientLogs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
-	if err != nil {
-		fmt.Println("Log File Error")
-	}
-
-	log.SetOutput(file)
 
 	c, err := net.Dial("tcp", server + ":" + port)
 	if err != nil {

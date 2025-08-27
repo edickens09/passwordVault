@@ -12,8 +12,15 @@ import (
 	"encoding/binary"
 
 	"github.com/edickens09/passwordVault/database"
+	"gopkg.in/yaml.v3"
 
 )
+
+type Config struct {
+	server string
+	port int
+}
+
 type Version struct{
 	//Major Verison number will break backwards compatibility
 	Major uint8
@@ -201,6 +208,23 @@ func HandleCreate(vault database.Database) {
 }
 
 func main() {
+
+	yFile, err := os.ReadFile("config.yaml")
+	if err != nil {
+		fmt.Println("Error opening config file")
+	}
+
+	data := make(map[string]Config)
+
+	err2 := yaml.Unmarshal(yFile, &data)
+	if err2 != nil {
+		fmt.Println("Error with config file")
+	}
+
+	for k, v := range data {
+		fmt.Println("%s: %s\n", k, v)
+	}
+
 	arguments := os.Args
 	if len(arguments) == 1 {
 		fmt.Println("Please provide host.")

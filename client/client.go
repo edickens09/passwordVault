@@ -17,8 +17,8 @@ import (
 )
 
 type Config struct {
-	server string
-	port int
+	Host string `yaml:"server"`
+	Port string `yaml:"port"`
 }
 
 type Version struct{
@@ -209,26 +209,20 @@ func HandleCreate(vault database.Database) {
 
 func main() {
 
+	var config Config
+
 	yFile, err := os.ReadFile("config.yaml")
 	if err != nil {
 		fmt.Println("Error opening config file")
 	}
 
-	data := make(map[string]Config)
-
-	err2 := yaml.Unmarshal(yFile, &data)
+	err2 := yaml.Unmarshal(yFile, &config)
 	if err2 != nil {
 		fmt.Println("Error with config file")
 	}
 
-	for k, v := range data {
-		fmt.Println("%s: %s\n", k, v)
-	}
-
-	arguments := os.Args
-	if len(arguments) == 1 {
-		fmt.Println("Please provide host.")
-	}
+	server := config.Host
+	port := config.Port
 
 	file, err := os.OpenFile("logs/clientLogs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
@@ -237,8 +231,7 @@ func main() {
 
 	log.SetOutput(file)
 
-	CONNECT := arguments[1]
-	c, err := net.Dial("tcp", CONNECT + ":19865")
+	c, err := net.Dial("tcp", server + ":" + port)
 	if err != nil {
 		log.Println(err)
 		fmt.Println(err)

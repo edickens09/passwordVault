@@ -19,6 +19,11 @@ type Version struct {
 	Patch uint16
 }
 
+func CreateVault() {
+	if _, err := os.Stat("vault.data"); errors.Is(err, os.ErrNotExist) {
+		fmt.Println("Vault does exist. Creating new Vault now")
+	}
+}
 //Handles anything for the initial Authentication
 func HandleAuthentication(conn net.Conn) error {
 	authenticationKey := "Authentication Key"
@@ -118,6 +123,8 @@ func main() {
 	}
 
 	log.SetOutput(logFile)
+
+	CreateVault()
 
 	PORT := ":19865"
 	l, err := net.Listen("tcp4", PORT)

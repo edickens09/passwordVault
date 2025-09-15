@@ -34,7 +34,7 @@ func Menu() string {
 	
 	reader := bufio.NewReader(os.Stdin)
 
-	fmt.Println("--------MENU--------")
+	fmt.Println("\n--------MENU--------")
 	fmt.Println("1) Create new Entry")
 	fmt.Println("2) Find specific Entry")
 	fmt.Println("3) List all Entries")
@@ -98,6 +98,9 @@ func HandleHandshake(conn net.Conn) error {
 	}
 
 	err := binary.Write(conn, binary.BigEndian, clientVer)
+	if err != nil {
+		log.Println(err)
+	}
 
 	handshakeAnswer, err := bufio.NewReader(conn). ReadString('\n')
 	if err != nil {
@@ -137,6 +140,9 @@ func HandleCommands(conn net.Conn) {
 
 		case "RETRIEVE":
 			item := HandleRetrieve(data)
+			if item == nil {
+				fmt.Println("Unable to retrieve item due to error")
+			}
 
 			fmt.Println(item)
 			continue
@@ -166,8 +172,10 @@ func HandleList(vault database.Database) {
 	err := vault.ListVault()
 	if err != nil {
 		log.Println(err)
+		fmt.Println("\nVault error check logs for more info")
+		return
 	}
-	return
+
 }
 func HandleRetrieve(vault database.Database) [] string {
 
@@ -184,6 +192,8 @@ func HandleRetrieve(vault database.Database) [] string {
 	data, err := vault.ParseVault(serviceName)
 	if err != nil {
 		log.Println(err)
+		fmt.Println("\nVault error check logs for more info")
+		return nil
 	}
 
 	if data == nil {
@@ -207,6 +217,8 @@ func HandleCreate(vault database.Database) {
 
 	if err := vault.CreateEntry(serviceName); err != nil {
 		log.Println(err)
+		fmt.Println("\nVault error check logs for more info")
+		return
 	}
 }
 

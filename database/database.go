@@ -96,9 +96,7 @@ func (data Database) CreateEntry(name string) error {
 	defer file.Close()
 	
 	fmt.Fprintln(file, data)
-	if err != nil {
-		return errors.New(err.Error())
-	}
+	//find a way to check and make sur eit wrote and created an error
 
 	return nil
 }

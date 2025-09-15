@@ -118,15 +118,7 @@ func HandleCommands(conn net.Conn) {
 	//Should I look at a different way to do this?
 	var data = database.Database{}
 	for {
-		/*reader := bufio.NewReader(os.Stdin)
-		fmt.Print(">> ")
-
-		command, err := reader.ReadString('\n')
-		if err != nil {
-			log.Println(err)
-			return
-		}*/
-
+	
 		command := Menu()
 		
 		if command == "" {
@@ -140,7 +132,7 @@ func HandleCommands(conn net.Conn) {
 
 		case "STOP":
 			fmt.Println("TCP client exit...")
-			fmt.Fprintf(conn, command)
+			fmt.Fprintf(conn, command + "\n")
 			return
 
 		case "RETRIEVE":
@@ -149,6 +141,9 @@ func HandleCommands(conn net.Conn) {
 			fmt.Println(item)
 			continue
 
+		case "LIST":
+			HandleList(data)
+			continue
 
 		default:
 			fmt.Fprintf(conn, command)
@@ -162,10 +157,18 @@ func HandleCommands(conn net.Conn) {
 			}
 			
 			fmt.Println("-> " + message)
+			continue
 		}
 	}	
 }
 
+func HandleList(vault database.Database) {
+	err := vault.ListVault()
+	if err != nil {
+		log.Println(err)
+	}
+	return
+}
 func HandleRetrieve(vault database.Database) [] string {
 
 	reader := bufio.NewReader(os.Stdin)

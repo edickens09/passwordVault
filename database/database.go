@@ -41,6 +41,27 @@ func (data Database) ParseVault(name string) ([]string, error) {
 
 }
 
+func (data Database) ListVault() (error) {
+	file, err := os.Open("../vault.data")
+	if err != nil {
+		return errors.New("error with vault file")
+	}
+
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	if !scanner.Scan() {
+		return errors.New("error reading vault")
+	}
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		fmt.Println(line)
+	}
+
+	return nil
+}
+
 func (data Database) CreateEntry(name string) error {
 
 	fmt.Printf("What's the username for %v\n", name)

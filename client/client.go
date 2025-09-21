@@ -100,6 +100,7 @@ func HandleHandshake(conn net.Conn) error {
 	err := binary.Write(conn, binary.BigEndian, clientVer)
 	if err != nil {
 		log.Println(err)
+		return err
 	}
 
 	handshakeAnswer, err := bufio.NewReader(conn). ReadString('\n')
@@ -114,7 +115,7 @@ func HandleHandshake(conn net.Conn) error {
 	fmt.Println(handshakeAnswer)
 	return nil
 }
-
+// Maybe this should be rewritten so that it doesn't need the connection passed into it since most options don't need the connection. Maybe only establish a connection for the purpose of syncing server and client
 func HandleCommands(conn net.Conn) {
 
 	//This feels wrong, I need to initalize the database, but I don't think this is the correct way to do it
@@ -171,8 +172,8 @@ func HandleCommands(conn net.Conn) {
 func HandleList(vault database.Database) {
 	err := vault.ListVault()
 	if err != nil {
-		log.Println(err)
 		fmt.Println("\nVault error check logs for more info")
+		log.Fatalln(err)
 		return
 	}
 
@@ -191,8 +192,8 @@ func HandleRetrieve(vault database.Database) [] string {
 
 	data, err := vault.ParseVault(serviceName)
 	if err != nil {
-		log.Println(err)
 		fmt.Println("\nVault error check logs for more info")
+		log.Fatalln(err)
 		return nil
 	}
 
@@ -216,8 +217,8 @@ func HandleCreate(vault database.Database) {
 	serviceName = strings.TrimSuffix(serviceName, "\n")
 
 	if err := vault.CreateEntry(serviceName); err != nil {
-		log.Println(err)
 		fmt.Println("\nVault error check logs for more info")
+		log.Fatalln(err)
 		return
 	}
 }
@@ -236,11 +237,14 @@ func main() {
 	yFile, err := os.ReadFile("config.yaml")
 	if err != nil {
 		fmt.Println("Error opening config file")
+		log.Println(err)
+
 	}
 
 	err2 := yaml.Unmarshal(yFile, &config)
 	if err2 != nil {
 		fmt.Println("Error with config file")
+		log.Println(err2)
 	}
 
 	server := config.Host

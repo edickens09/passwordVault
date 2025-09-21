@@ -2,5 +2,5 @@ use username on connection
 create vault per username
 add password to be used with username
 on server create path for each username change code to use username path
-remove newlines from erros and connection methods
+remove newlines from errors and connection methods
 encrypt vaults with client created key and password

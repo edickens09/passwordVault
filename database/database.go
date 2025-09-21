@@ -16,7 +16,7 @@ type Database struct {
 
 func (data Database) ParseVault(name string) ([]string, error) {
 
-	file, err := os.Open("vault.data")
+	file, err := os.Open("../vault.data")
 	if err != nil {
 		return nil, errors.New("error with vault File")
 	}
@@ -24,9 +24,9 @@ func (data Database) ParseVault(name string) ([]string, error) {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	if !scanner.Scan() {
+	/* if !scanner.Scan() {
 		return nil, errors.New("error reading vault")
-	}
+	}*/
 
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -37,12 +37,16 @@ func (data Database) ParseVault(name string) ([]string, error) {
 		}	
 	}
 
+	if err := scanner.Err(); err != nil {
+		return nil, errors.New("error reading vault")
+	}
+
 	return nil, nil
 
 }
 
 func (data Database) ListVault() (error) {
-	file, err := os.Open("vault.data")
+	file, err := os.Open("../vault.data")
 	if err != nil {
 		return errors.New("error with vault file")
 	}
@@ -88,7 +92,7 @@ func (data Database) CreateEntry(name string) error {
 	data.username = username
 	data.password = password
 	
-	file, err := os.OpenFile("vault.data", os.O_APPEND|os.O_WRONLY, 0)
+	file, err := os.OpenFile("../vault.data", os.O_APPEND|os.O_WRONLY, 0)
 	if err != nil {
 		return errors.New("error opening file for writing")
 	}

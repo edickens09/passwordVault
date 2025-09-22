@@ -84,7 +84,6 @@ func HandleAuthentication(c net.Conn) error {
 	if authenticationAttempt != "Success\n" {
 		return errors.New(authenticationAttempt)
 	}else{
-		fmt.Println("Authentication Successful")
 		return nil
 	}
 }
@@ -111,7 +110,6 @@ func HandleHandshake(conn net.Conn) error {
 			return err
 		}
 	}
-
 	fmt.Println(handshakeAnswer)
 	return nil
 }
@@ -153,17 +151,7 @@ func HandleCommands(conn net.Conn) {
 			continue
 
 		default:
-			fmt.Fprintf(conn, command)
-			message, err := bufio.NewReader(conn).ReadString('\n')
-			if err != nil {
-				log.Println(err)
-				if err == io.EOF {
-					fmt.Println("Error closing connection")
-					return
-				}
-			}
-			
-			fmt.Println("-> " + message)
+			fmt.Println("Unknown Command: " + command)
 			continue
 		}
 	}	
@@ -223,6 +211,40 @@ func HandleCreate(vault database.Database) {
 	}
 }
 
+func SyncFromServer() (net.Conn, error) {
+	var config Config
+
+	yFile, err := os.ReadFile("config.yaml")
+	if err != nil {
+		fmt.Println("Error opening config file")
+		return nil, err
+	}
+
+	err2 := yaml.Unmarshal(yFile, &config)
+	if err2 != nil {
+		fmt.Println("Error with config file")
+		return nil, err2
+	}
+
+	server := config.Host
+	port := config.Port
+
+	c, err := net.Dial("tcp", server + ":" + port)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	if err := HandleAuthentication(c); err != nil {
+		return nil, err
+	}
+
+	if err := HandleHandshake(c); err != nil {
+		return nil, err
+	}
+
+	return c, nil
+}
 func main() {
 
 	file, err := os.OpenFile("logs/clientLogs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
@@ -232,39 +254,10 @@ func main() {
 
 	log.SetOutput(file)
 
-	var config Config
-
-	yFile, err := os.ReadFile("config.yaml")
+	c, err := SyncFromServer()
 	if err != nil {
-		fmt.Println("Error opening config file")
-		log.Println(err)
-
-	}
-
-	err2 := yaml.Unmarshal(yFile, &config)
-	if err2 != nil {
-		fmt.Println("Error with config file")
-		log.Println(err2)
-	}
-
-	server := config.Host
-	port := config.Port
-
-	c, err := net.Dial("tcp", server + ":" + port)
-	if err != nil {
-		log.Println(err)
 		fmt.Println(err)
-		return
-	}
-
-	if err := HandleAuthentication(c); err != nil {
 		log.Println(err)
-		return
-	}
-
-	if err := HandleHandshake(c); err != nil {
-		log.Println(err)
-		return
 	}
 
 	HandleCommands(c)

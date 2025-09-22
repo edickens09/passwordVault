@@ -250,6 +250,7 @@ func main() {
 	file, err := os.OpenFile("logs/clientLogs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		fmt.Println("Log File Error")
+		return
 	}
 
 	log.SetOutput(file)

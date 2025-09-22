@@ -59,7 +59,7 @@ func Menu() string {
 		case "3\n": 
 			return "LIST"
 
-		case "4\n":
+		case "4\n", ":q\n":
 			return "STOP"
 
 		default:

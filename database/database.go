@@ -54,13 +54,17 @@ func (data Database) ListVault() (error) {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	if !scanner.Scan() {
+	/*if !scanner.Scan() {
 		return errors.New("error reading vault")
-	}
+	}*/
 
 	for scanner.Scan() {
 		line := scanner.Text()
 		fmt.Println(line)
+	}
+
+	if err := scanner.Err(); err != nil {
+		return errors.New("error reading vault")
 	}
 
 	return nil

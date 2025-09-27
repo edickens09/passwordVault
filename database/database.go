@@ -9,7 +9,6 @@ import(
 )
 
 type Database struct {
-	serviceName string
 	username string
 	password string
 }
@@ -70,17 +69,17 @@ func (data Database) ListVault() (error) {
 	return nil
 }
 
-func (data Database) CreateEntry(name string) error {
+func (data Database) CreateEntry(name string, username string) error {
 
 	fmt.Printf("What's the username for %v\n", name)
 	reader := bufio.NewReader(os.Stdin)
 
-	username, err := reader.ReadString('\n')
+	serviceUsername, err := reader.ReadString('\n')
 	if err != nil {
 		return errors.New("error getting username")
 	}
 
-	username = strings.TrimSuffix(username, "\n")
+	serviceUsername = strings.TrimSuffix(serviceUsername, "\n")
 
 	fmt.Printf("What's the password for %v\n", name)
 	reader = bufio.NewReader(os.Stdin)
@@ -92,11 +91,10 @@ func (data Database) CreateEntry(name string) error {
 
 	password = strings.TrimSuffix(password, "\n")
 	
-	data.serviceName = name
-	data.username = username
+	data.username = serviceUsername
 	data.password = password
 	
-	file, err := os.OpenFile("vault.data", os.O_APPEND|os.O_WRONLY, 0)
+	file, err := os.OpenFile("/user/" + username +"/" + name + ".vault", os.O_APPEND| os.O_CREATE | os.O_WRONLY, 0644)
 	if err != nil {
 		return errors.New("error opening file for writing")
 	}

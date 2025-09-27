@@ -21,7 +21,13 @@ type Version struct {
 
 func CreateVault() {
 	if _, err := os.Stat("vault.data"); errors.Is(err, os.ErrNotExist) {
-		fmt.Println("Vault does exist. Creating new Vault now")
+		fmt.Println("Vault doesn't exist. Creating new Vault now")
+		vault, err := os.Create("vault.data")
+		if err != nil {
+			log.Println("Error creating vault")
+			return
+		}
+		defer vault.Close()
 	}
 }
 //Handles anything for the initial Authentication
@@ -67,7 +73,7 @@ func HandleHandshake(conn net.Conn) error {
 }
 
 func HandleConnection(c net.Conn) {
-
+	
 	defer c.Close()
 
 	if err := HandleAuthentication(c); err != nil {
@@ -86,6 +92,8 @@ func HandleConnection(c net.Conn) {
 	
 	fmt.Println("handshake accepted")
 	c.Write([]byte("handshake accepted\n"))
+
+	//here we need to set a checking for username to see if the user exists or not
 	
 	// continuous handling of incoming packets
 	for {
@@ -113,6 +121,10 @@ func HandleConnection(c net.Conn) {
 			c.Write([]byte("Unknown Command\n"))
 		}
 	}
+}
+
+func ServerMonitoring() {
+	fmt.Println("Using ServerMonitoring function is working")
 }
 
 func main() {

@@ -131,6 +131,7 @@ func HandleCommands(conn net.Conn) {
 
 		case "CREATE":
 			HandleCreate(data)
+			go SyncToServer()
 
 		case "STOP":
 			fmt.Println("TCP client exit...")
@@ -211,6 +212,10 @@ func HandleCreate(vault database.Database) {
 	}
 }
 
+func SyncToServer() {
+	fmt.Println("Simulating sync to server successful")
+}
+
 func SyncFromServer() (net.Conn, error) {
 	var config Config
 
@@ -245,6 +250,26 @@ func SyncFromServer() (net.Conn, error) {
 
 	return c, nil
 }
+
+func GetUsername() (string, error) {
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print("Username: ")
+
+	userName, err := reader.ReadString('\n')
+	if err != nil {
+		return "", err
+	}
+
+	if userName == "\n" {
+		fmt.Println("Username cannot be an empty string")
+		userName, err = GetUsername()
+		if err != nil {
+			return "", err
+		}
+	}
+
+	return userName, nil
+}
 func main() {
 
 	file, err := os.OpenFile("logs/clientLogs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
@@ -254,6 +279,13 @@ func main() {
 	}
 
 	log.SetOutput(file)
+	
+	//this needs sent to the server during the sync to get the correct information
+	user, err := GetUsername()
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println(user)
 
 	c, err := SyncFromServer()
 	if err != nil {

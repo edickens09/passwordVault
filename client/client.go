@@ -11,6 +11,7 @@ import (
 	"encoding/binary"
 	
 	database "github.com/edickens09/passwordVault/database"
+	user "github.com/edickens/passwordVault/user"
 	"gopkg.in/yaml.v3"
 
 )
@@ -157,13 +158,6 @@ func HandleCommands(conn net.Conn) {
 	}	
 }
 
-func CheckUserPath(username string) {
-	/* if path username != true {
-		create path
-	
-	}*/
-}
-
 func SyncToServer() {
 	fmt.Println("Simulating sync to server successful")
 }
@@ -205,7 +199,7 @@ func SyncFromServer() (net.Conn, error) {
 
 // should find a way to handle this both locally as well as reverify to online server
 // server version does not need CheckUserPath(userName)
-func GetUsername() (string, error) {
+/* func GetUsername() (string, error) {
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Username: ")
 
@@ -222,10 +216,10 @@ func GetUsername() (string, error) {
 		}
 	}
 
-	//CheckUserPath(userName)
+	//user.CheckUserPath(userName)
 
 	return userName, nil
-}
+} */
 func main() {
 
 	file, err := os.OpenFile("logs/clientLogs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
@@ -237,11 +231,11 @@ func main() {
 	log.SetOutput(file)
 	
 	//this needs sent to the server during the sync to get the correct information
-	user, err := GetUsername()
+	username, err := user.GetUsername()
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println(user)
+	fmt.Println(username)
 
 	c, err := SyncFromServer()
 	if err != nil {

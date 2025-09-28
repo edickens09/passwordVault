@@ -8,10 +8,9 @@ import (
 	"io"
 	"errors"
 	"log"
-	"strings"
 	"encoding/binary"
-
-	"github.com/edickens09/passwordVault/database"
+	
+	database "github.com/edickens09/passwordVault/database"
 	"gopkg.in/yaml.v3"
 
 )
@@ -110,7 +109,7 @@ func HandleHandshake(conn net.Conn) error {
 			return err
 		}
 	}
-	fmt.Println(handshakeAnswer)
+	log.Println(handshakeAnswer)
 	return nil
 }
 // Maybe this should be rewritten so that it doesn't need the connection passed into it since most options don't need the connection. Maybe only establish a connection for the purpose of syncing server and client
@@ -139,7 +138,7 @@ func HandleCommands(conn net.Conn) {
 			return
 
 		case "RETRIEVE":
-			item := HandleRetrieve(data)
+			item := HandleRetrieve()
 			if item == nil {
 				fmt.Println("Unable to retrieve item due to error")
 			}
@@ -148,7 +147,7 @@ func HandleCommands(conn net.Conn) {
 			continue
 
 		case "LIST":
-			HandleList(data)
+			HandleList()
 			continue
 
 		default:
@@ -158,58 +157,11 @@ func HandleCommands(conn net.Conn) {
 	}	
 }
 
-func HandleList(vault database.Database) {
-	err := vault.ListVault()
-	if err != nil {
-		fmt.Println("\nVault error check logs for more info")
-		log.Fatalln(err)
-		return
-	}
-
-}
-func HandleRetrieve(vault database.Database) [] string {
-
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Println("Service Name: ")
-
-	serviceName, err := reader.ReadString('\n')
-	if err != nil {
-		log.Println(err)
-	}
-
-	serviceName = strings.TrimSuffix(serviceName, "\n")
-
-	data, err := vault.ParseVault(serviceName)
-	if err != nil {
-		fmt.Println("\nVault error check logs for more info")
-		log.Fatalln(err)
-		return nil
-	}
-
-	if data == nil {
-		fmt.Println("Vault Entry not found")
-	}
-
-	return data
-}
-
-func HandleCreate(vault database.Database) {
+func CheckUserPath(username string) {
+	/* if path username != true {
+		create path
 	
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Println("Service Name: ")
-
-	serviceName, err := reader.ReadString('\n')
-	if err != nil {
-		log.Println(err)
-	}
-
-	serviceName = strings.TrimSuffix(serviceName, "\n")
-
-	if err := vault.CreateEntry(serviceName); err != nil {
-		fmt.Println("\nVault error check logs for more info")
-		log.Fatalln(err)
-		return
-	}
+	}*/
 }
 
 func SyncToServer() {
@@ -251,6 +203,8 @@ func SyncFromServer() (net.Conn, error) {
 	return c, nil
 }
 
+// should find a way to handle this both locally as well as reverify to online server
+// server version does not need CheckUserPath(userName)
 func GetUsername() (string, error) {
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Username: ")
@@ -267,6 +221,8 @@ func GetUsername() (string, error) {
 			return "", err
 		}
 	}
+
+	//CheckUserPath(userName)
 
 	return userName, nil
 }
@@ -295,4 +251,3 @@ func main() {
 
 	HandleCommands(c)
 }
-

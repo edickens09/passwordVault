@@ -13,7 +13,8 @@ type Database struct {
 	password string
 }
 
-func (data Database) ParseVault(name string) ([]string, error) {
+// needs refactored no longer using "vault.data"
+func ParseVault(name string) ([]string, error) {
 
 	file, err := os.Open("vault.data")
 	if err != nil {
@@ -44,7 +45,8 @@ func (data Database) ParseVault(name string) ([]string, error) {
 
 }
 
-func (data Database) ListVault() (error) {
+//needs refactoring not longer uses "vault.data"
+func ListVault() (error) {
 	file, err := os.Open("vault.data")
 	if err != nil {
 		return errors.New("error with vault file")

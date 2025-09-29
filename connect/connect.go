@@ -1,0 +1,75 @@
+package connect
+
+import (
+	"fmt"
+	"log"
+	"net"
+	"io"
+	"encoding/binary"
+	"errors"
+	"bufio"
+
+//	"gopkg.in/yaml.v3"
+)
+
+type Version struct {
+	//Major version number very likely to break backwards compatibility
+	Major uint8
+	// Minor version number may have new features, but server may still support old version
+	Minor uint16
+	// Patch version number should only include bug fixes and should break compatibility
+	Patch uint16
+}
+
+type Config struct {
+	Host string `yaml:"server"`
+	Port string `yaml:"port"`
+}
+
+func HandleHandshake(conn net.Conn) error {
+	clientVer := Version {
+		Major:00,
+		Minor:01,
+		Patch:01,
+	}
+
+	err := binary.Write(conn, binary.BigEndian, clientVer)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+// look closer into this. I think it could be cleaned up with the error return this works but I think it's wrong
+	handshakeAnswer, err := bufio.NewReader(conn).ReadString('\n')
+	if err != nil {
+		log.Println(err)
+		if err == io.EOF {
+			fmt.Println("Connection closed. Exiting")
+			return err
+		}
+	}
+	log.Println(handshakeAnswer)
+
+	return nil
+}
+
+func HandleAuthentication(conn net.Conn) error {
+
+	authenticationKey := "Authentication Key\n"
+	fmt.Fprintf(conn, authenticationKey)
+
+	authenticationAttempt, err := bufio.NewReader(conn).ReadString('\n')
+	if err != nil {
+		return err
+	}
+
+	if authenticationAttempt != "Success\n" {
+		return errors.New(authenticationAttempt)
+	}else {
+		return nil
+	}
+}
+
+func SyncToServer() {
+	fmt.Println("simulating syncing to server is working")
+}

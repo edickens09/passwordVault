@@ -3,8 +3,10 @@ package user
 import (
 	"fmt"
 	"bufio"
-	//"errors"
+	"errors"
 	"os"
+	"log"
+	"strings"
 )
 
 // this needs a way to verify to the server as well as locally. 
@@ -19,7 +21,9 @@ func GetUsername() (string, error) {
 		return "", err
 	}
 
-	if userName == "\n" {
+	userName = strings.TrimSuffix(userName, "\n")
+
+	if userName == "" {
 		fmt.Println("Username cannot be an empty string")
 		userName, err = GetUsername()
 		if err != nil {
@@ -27,13 +31,20 @@ func GetUsername() (string, error) {
 		}
 	}
 
-	//user.CheckUserPath(userName)
+	CheckUserPath(userName)
 
 	return userName, nil
 
 }
 
 func CheckUserPath(username string) {
+
+	if _, err := os.Stat("user/" + username + "/"); errors.Is(err, os.ErrNotExist) {
+		fmt.Println("user directory not found creating now")
+		if err := os.MkdirAll("user/" + username + "/", os.ModePerm); err != nil {
+			log.Fatalln(err)
+		}
+	}
 	/* if path username != true {
 		create path
 	}*/

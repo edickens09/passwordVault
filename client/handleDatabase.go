@@ -10,9 +10,9 @@ import (
 	database "github.com/edickens09/passwordVault/database"
 )
 
-func HandleList() {
+func HandleList(username string) {
 
-	err := database.ListVault()
+	err := database.ListVault(username)
 	if err != nil {
 		fmt.Println("\nVault error check logs for more details")
 		log.Println(err)
@@ -21,7 +21,7 @@ func HandleList() {
 }	
 
 //this is not functional as of the new vault structure needs refactored in database package to make work again
-func HandleRetrieve() [] string {
+func HandleRetrieve(username string) [] string {
 
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Service Name: ")
@@ -33,7 +33,7 @@ func HandleRetrieve() [] string {
 
 	serviceName = strings.TrimSuffix(serviceName, "\n")
 
-	data, err := database.ParseVault(serviceName)
+	data, err := database.ParseVault(serviceName, username)
 	if err != nil {
 		fmt.Println(err)
 		log.Fatalln(err)
@@ -47,7 +47,7 @@ func HandleRetrieve() [] string {
 	return data
 }
 
-func HandleCreate(vault database.Database) {
+func HandleCreate(username string) {
 
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Service Name: ")
@@ -59,7 +59,7 @@ func HandleCreate(vault database.Database) {
 
 	serviceName = strings.TrimSuffix(serviceName, "\n")
 
-	if err := vault.CreateEntry(serviceName, "eric"); err != nil {
+	if err := database.CreateEntry(serviceName, username); err != nil {
 		fmt.Println("\nVault error check logs for more detail")
 		log.Fatalln(err)
 		return

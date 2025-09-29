@@ -14,7 +14,7 @@ type Database struct {
 }
 
 // needs refactored no longer using "vault.data"
-func ParseVault(name string) ([]string, error) {
+func ParseVault(name string, username string) ([]string, error) {
 
 	file, err := os.Open("vault.data")
 	if err != nil {
@@ -46,7 +46,7 @@ func ParseVault(name string) ([]string, error) {
 }
 
 //needs refactoring not longer uses "vault.data"
-func ListVault() (error) {
+func ListVault(username string) (error) {
 	file, err := os.Open("vault.data")
 	if err != nil {
 		return errors.New("error with vault file")
@@ -71,7 +71,9 @@ func ListVault() (error) {
 	return nil
 }
 
-func (data Database) CreateEntry(name string, username string) error {
+func CreateEntry(name string, username string) error {
+
+	var data Database
 
 	fmt.Printf("What's the username for %v\n", name)
 	reader := bufio.NewReader(os.Stdin)
@@ -96,7 +98,7 @@ func (data Database) CreateEntry(name string, username string) error {
 	data.username = serviceUsername
 	data.password = password
 	
-	file, err := os.OpenFile("/user/" + username +"/" + name + ".vault", os.O_APPEND| os.O_CREATE | os.O_WRONLY, 0644)
+	file, err := os.OpenFile("user/" + username + "/" + name + ".vault", os.O_APPEND| os.O_CREATE | os.O_WRONLY, 0644)
 	if err != nil {
 		return errors.New("error opening file for writing")
 	}

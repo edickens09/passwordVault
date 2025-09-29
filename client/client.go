@@ -5,13 +5,10 @@ import (
 	"fmt"
 	"net"
 	"os"
-	"io"
-	"errors"
 	"log"
-	"encoding/binary"
 	
-	database "github.com/edickens09/passwordVault/database"
-	user "github.com/edickens/passwordVault/user"
+	user "github.com/edickens09/passwordVault/user"
+	connect "github.com/edickens09/passwordVault/connect"
 	"gopkg.in/yaml.v3"
 
 )
@@ -71,54 +68,9 @@ func Menu() string {
 
 }
 
-func HandleAuthentication(c net.Conn) error {
-
-	authenticationKey := "Authentication Key\n"
-	fmt.Fprintf(c, authenticationKey)
-
-	authenticationAttempt, err := bufio.NewReader(c).ReadString('\n')
-	if err != nil {
-		return err
-	}
-
-	if authenticationAttempt != "Success\n" {
-		return errors.New(authenticationAttempt)
-	}else{
-		return nil
-	}
-}
-
-func HandleHandshake(conn net.Conn) error {
-
-	clientVer := Version {
-		Major:00,
-		Minor:01,
-		Patch:01,
-	}
-
-	err := binary.Write(conn, binary.BigEndian, clientVer)
-	if err != nil {
-		log.Println(err)
-		return err
-	}
-
-	handshakeAnswer, err := bufio.NewReader(conn). ReadString('\n')
-	if err != nil {
-		log.Println(err)
-		if err == io.EOF {
-			fmt.Println("Connection closed. Exiting")
-			return err
-		}
-	}
-	log.Println(handshakeAnswer)
-	return nil
-}
 // Maybe this should be rewritten so that it doesn't need the connection passed into it since most options don't need the connection. Maybe only establish a connection for the purpose of syncing server and client
-func HandleCommands(conn net.Conn) {
+func HandleCommands(conn net.Conn, username string) {
 
-	//This feels wrong, I need to initalize the database, but I don't think this is the correct way to do it
-	//Should I look at a different way to do this?
-	var data = database.Database{}
 	for {
 	
 		command := Menu()
@@ -130,8 +82,8 @@ func HandleCommands(conn net.Conn) {
 		switch command {
 
 		case "CREATE":
-			HandleCreate(data)
-			go SyncToServer()
+			HandleCreate(username)
+			go connect.SyncToServer()
 
 		case "STOP":
 			fmt.Println("TCP client exit...")
@@ -139,7 +91,7 @@ func HandleCommands(conn net.Conn) {
 			return
 
 		case "RETRIEVE":
-			item := HandleRetrieve()
+			item := HandleRetrieve(username)
 			if item == nil {
 				fmt.Println("Unable to retrieve item due to error")
 			}
@@ -148,7 +100,7 @@ func HandleCommands(conn net.Conn) {
 			continue
 
 		case "LIST":
-			HandleList()
+			HandleList(username)
 			continue
 
 		default:
@@ -156,10 +108,6 @@ func HandleCommands(conn net.Conn) {
 			continue
 		}
 	}	
-}
-
-func SyncToServer() {
-	fmt.Println("Simulating sync to server successful")
 }
 
 func SyncFromServer() (net.Conn, error) {
@@ -186,40 +134,17 @@ func SyncFromServer() (net.Conn, error) {
 		return nil, err
 	}
 
-	if err := HandleAuthentication(c); err != nil {
+	if err := connect.HandleAuthentication(c); err != nil {
 		return nil, err
 	}
 
-	if err := HandleHandshake(c); err != nil {
+	if err := connect.HandleHandshake(c); err != nil {
 		return nil, err
 	}
 
 	return c, nil
 }
 
-// should find a way to handle this both locally as well as reverify to online server
-// server version does not need CheckUserPath(userName)
-/* func GetUsername() (string, error) {
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Username: ")
-
-	userName, err := reader.ReadString('\n')
-	if err != nil {
-		return "", err
-	}
-
-	if userName == "\n" {
-		fmt.Println("Username cannot be an empty string")
-		userName, err = GetUsername()
-		if err != nil {
-			return "", err
-		}
-	}
-
-	//user.CheckUserPath(userName)
-
-	return userName, nil
-} */
 func main() {
 
 	file, err := os.OpenFile("logs/clientLogs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
@@ -243,5 +168,5 @@ func main() {
 		log.Println(err)
 	}
 
-	HandleCommands(c)
+	HandleCommands(c, username)
 }

@@ -11,7 +11,7 @@ import (
 
 // this needs a way to verify to the server as well as locally. 
 // if using same for both server side doesn't necessarily need user.CheckUserPath()
-func GetUsername() (string, error) {
+func LoginUsername() (string, error) {
 
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Username: ")
@@ -25,7 +25,7 @@ func GetUsername() (string, error) {
 
 	if userName == "" {
 		fmt.Println("Username cannot be an empty string")
-		userName, err = GetUsername()
+		userName, err = LoginUsername()
 		if err != nil {
 			return "", err
 		}
@@ -45,7 +45,9 @@ func CheckUserPath(username string) {
 			log.Fatalln(err)
 		}
 	}
-	/* if path username != true {
-		create path
-	}*/
+}
+
+func GetUsername() (string, error) {
+	return "eric", nil
+
 }

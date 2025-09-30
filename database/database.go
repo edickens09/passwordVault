@@ -6,6 +6,9 @@ import(
 	"errors"
 	"bufio"
 	"strings"
+	"log"
+
+	user "github.com/edickens09/passwordVault/user"
 )
 
 type Database struct {
@@ -14,7 +17,7 @@ type Database struct {
 }
 
 // needs refactored no longer using "vault.data"
-func ParseVault(name string, username string) ([]string, error) {
+func ParseVault(name string) ([]string, error) {
 
 	file, err := os.Open("vault.data")
 	if err != nil {
@@ -46,7 +49,7 @@ func ParseVault(name string, username string) ([]string, error) {
 }
 
 //needs refactoring not longer uses "vault.data"
-func ListVault(username string) (error) {
+func ListVault() (error) {
 	file, err := os.Open("vault.data")
 	if err != nil {
 		return errors.New("error with vault file")
@@ -71,7 +74,7 @@ func ListVault(username string) (error) {
 	return nil
 }
 
-func CreateEntry(name string, username string) error {
+func CreateEntry(name string) error {
 
 	var data Database
 
@@ -97,6 +100,11 @@ func CreateEntry(name string, username string) error {
 	
 	data.username = serviceUsername
 	data.password = password
+
+	username, err := user.GetUsername()
+	if err != nil {
+		log.Println("Error getting username")
+	}
 	
 	file, err := os.OpenFile("user/" + username + "/" + name + ".vault", os.O_APPEND| os.O_CREATE | os.O_WRONLY, 0644)
 	if err != nil {

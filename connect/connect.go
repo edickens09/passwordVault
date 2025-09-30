@@ -8,8 +8,9 @@ import (
 	"encoding/binary"
 	"errors"
 	"bufio"
+	"os"
 
-//	"gopkg.in/yaml.v3"
+	"gopkg.in/yaml.v3"
 )
 
 type Version struct {
@@ -72,4 +73,39 @@ func HandleAuthentication(conn net.Conn) error {
 
 func SyncToServer() {
 	fmt.Println("simulating syncing to server is working")
+}
+
+func SyncFromServer() (net.Conn, error) {
+	var config Config
+
+	yFile, err := os.ReadFile("config.yaml")
+	if err != nil {
+		fmt.Println("Error opening config file")
+		return nil, err
+	}
+
+	err2 := yaml.Unmarshal(yFile, &config)
+	if err2 != nil {
+		fmt.Println("Error with config file")
+		return nil, err2
+	}
+
+	server := config.Host
+	port := config.Port
+
+	c, err := net.Dial("tcp", server + ":" + port)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	if err := HandleAuthentication(c); err != nil {
+		return nil, err
+	}
+
+	if err := HandleHandshake(c); err != nil {
+		return nil, err
+	}
+
+	return c, nil
 }

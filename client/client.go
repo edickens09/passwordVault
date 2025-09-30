@@ -9,23 +9,8 @@ import (
 	
 	user "github.com/edickens09/passwordVault/user"
 	connect "github.com/edickens09/passwordVault/connect"
-	"gopkg.in/yaml.v3"
 
 )
-
-type Config struct {
-	Host string `yaml:"server"`
-	Port string `yaml:"port"`
-}
-
-type Version struct{
-	//Major Verison number will break backwards compatibility
-	Major uint8
-	//Minor Version has new features or commands, server may support multiple version
-	Minor uint16
-	//Patch Version, should only have bug fixes and shouldn't break
-	Patch uint16
-}
 
 func Menu() string {
 	
@@ -69,7 +54,7 @@ func Menu() string {
 }
 
 // Maybe this should be rewritten so that it doesn't need the connection passed into it since most options don't need the connection. Maybe only establish a connection for the purpose of syncing server and client
-func HandleCommands(conn net.Conn, username string) {
+func HandleCommands(conn net.Conn) {
 
 	for {
 	
@@ -82,7 +67,7 @@ func HandleCommands(conn net.Conn, username string) {
 		switch command {
 
 		case "CREATE":
-			HandleCreate(username)
+			HandleCreate()
 			go connect.SyncToServer()
 
 		case "STOP":
@@ -91,7 +76,7 @@ func HandleCommands(conn net.Conn, username string) {
 			return
 
 		case "RETRIEVE":
-			item := HandleRetrieve(username)
+			item := HandleRetrieve()
 			if item == nil {
 				fmt.Println("Unable to retrieve item due to error")
 			}
@@ -100,7 +85,7 @@ func HandleCommands(conn net.Conn, username string) {
 			continue
 
 		case "LIST":
-			HandleList(username)
+			HandleList()
 			continue
 
 		default:
@@ -108,41 +93,6 @@ func HandleCommands(conn net.Conn, username string) {
 			continue
 		}
 	}	
-}
-
-func SyncFromServer() (net.Conn, error) {
-	var config Config
-
-	yFile, err := os.ReadFile("config.yaml")
-	if err != nil {
-		fmt.Println("Error opening config file")
-		return nil, err
-	}
-
-	err2 := yaml.Unmarshal(yFile, &config)
-	if err2 != nil {
-		fmt.Println("Error with config file")
-		return nil, err2
-	}
-
-	server := config.Host
-	port := config.Port
-
-	c, err := net.Dial("tcp", server + ":" + port)
-	if err != nil {
-		fmt.Println(err)
-		return nil, err
-	}
-
-	if err := connect.HandleAuthentication(c); err != nil {
-		return nil, err
-	}
-
-	if err := connect.HandleHandshake(c); err != nil {
-		return nil, err
-	}
-
-	return c, nil
 }
 
 func main() {
@@ -156,17 +106,17 @@ func main() {
 	log.SetOutput(file)
 	
 	//this needs sent to the server during the sync to get the correct information
-	username, err := user.GetUsername()
+	username, err := user.LoginUsername()
 	if err != nil {
 		log.Fatalln(err)
 	}
 	fmt.Println(username)
 
-	c, err := SyncFromServer()
+	c, err := connect.SyncFromServer()
 	if err != nil {
 		fmt.Println(err)
 		log.Println(err)
 	}
 
-	HandleCommands(c, username)
+	HandleCommands(c)
 }

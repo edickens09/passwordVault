@@ -6,7 +6,6 @@ import(
 	"errors"
 	"bufio"
 	"strings"
-	"log"
 
 	user "github.com/edickens09/passwordVault/user"
 )
@@ -27,10 +26,7 @@ func ParseVault(name string) ([]string, error) {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	/* if !scanner.Scan() {
-		return nil, errors.New("error reading vault")
-	}*/
-
+	
 	for scanner.Scan() {
 		line := scanner.Text()
 		items := strings.Split(line, " ")
@@ -58,9 +54,6 @@ func ListVault() (error) {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	/*if !scanner.Scan() {
-		return errors.New("error reading vault")
-	}*/
 
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -101,10 +94,7 @@ func CreateEntry(name string) error {
 	data.username = serviceUsername
 	data.password = password
 
-	username, err := user.GetUsername()
-	if err != nil {
-		log.Println("Error getting username")
-	}
+	username := user.Username
 	
 	file, err := os.OpenFile("user/" + username + "/" + name + ".vault", os.O_APPEND| os.O_CREATE | os.O_WRONLY, 0644)
 	if err != nil {

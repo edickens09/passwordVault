@@ -9,31 +9,32 @@ import (
 	"strings"
 )
 
+var Username = "" 
+
 // this needs a way to verify to the server as well as locally. 
 // if using same for both server side doesn't necessarily need user.CheckUserPath()
-func LoginUsername() (string, error) {
+func LoginUsername() error {
 
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Username: ")
 
 	userName, err := reader.ReadString('\n')
 	if err != nil {
-		return "", err
+		return err
 	}
 
-	userName = strings.TrimSuffix(userName, "\n")
+	Username = strings.TrimSuffix(userName, "\n")
 
-	if userName == "" {
+	if Username == "" {
 		fmt.Println("Username cannot be an empty string")
-		userName, err = LoginUsername()
-		if err != nil {
-			return "", err
+		if err := LoginUsername(); err != nil {
+			return err
 		}
 	}
 
-	CheckUserPath(userName)
+	CheckUserPath(Username)
 
-	return userName, nil
+	return nil
 
 }
 

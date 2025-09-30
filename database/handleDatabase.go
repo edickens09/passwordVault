@@ -1,4 +1,4 @@
-package main
+package database
 
 import (
 	"fmt"
@@ -6,13 +6,11 @@ import (
 	"bufio"
 	"os"
 	"strings"
-
-	database "github.com/edickens09/passwordVault/database"
 )
 
 func HandleList() {
 
-	err := database.ListVault()
+	err := ListVault()
 	if err != nil {
 		fmt.Println("\nVault error check logs for more details")
 		log.Println(err)
@@ -35,7 +33,7 @@ func HandleRetrieve() [] string {
 
 	serviceName = strings.TrimSuffix(serviceName, "\n")
 
-	data, err := database.ParseVault(serviceName)
+	data, err := ParseVault(serviceName)
 	if err != nil {
 		fmt.Println(err)
 		log.Fatalln(err)
@@ -61,7 +59,7 @@ func HandleCreate() {
 
 	serviceName = strings.TrimSuffix(serviceName, "\n")
 
-	if err := database.CreateEntry(serviceName); err != nil {
+	if err := CreateEntry(serviceName); err != nil {
 		fmt.Println("\nVault error check logs for more detail")
 		log.Fatalln(err)
 		return

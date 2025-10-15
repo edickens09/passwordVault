@@ -23,7 +23,7 @@ type Version struct {
 }
 
 type Config struct {
-	Host string `yaml:"server"`
+	Server string `yaml:"server"`
 	Port string `yaml:"port"`
 }
 
@@ -90,7 +90,7 @@ func SyncFromServer() (net.Conn, error) {
 		return nil, err2
 	}
 
-	server := config.Host
+	server := config.Server
 	port := config.Port
 
 	c, err := net.Dial("tcp", server + ":" + port)

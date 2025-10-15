@@ -37,3 +37,4 @@ serverLogs.txt
 vault.data
 logs/
 config.yaml
+users.db

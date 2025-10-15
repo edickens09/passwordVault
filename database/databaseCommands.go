@@ -90,9 +90,14 @@ func CreateEntry(name string) error {
 	}
 
 	password = strings.TrimSuffix(password, "\n")
+
+	passwordHash, err := EncryptPassword(password)
+	if err != nil {
+		return errors.New("error hashing password")
+	}
 	
 	data.username = serviceUsername
-	data.password = password
+	data.password = passwordHash
 
 	username := user.Username
 	

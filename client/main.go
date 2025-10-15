@@ -22,7 +22,7 @@ func main() {
 	log.SetOutput(file)
 	
 	//this needs sent to the server during the sync to get the correct information
-	if err := user.LoginUsername(); err != nil {
+	if err := user.LoginUser(); err != nil {
 		log.Fatalln(err)
 	}
 

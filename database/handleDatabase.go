@@ -18,8 +18,6 @@ func HandleList() {
 	
 }
 
-//need to add a GetUsername function for each of these so that I don't have to pass a username into these
-
 //this is not functional as of the new vault structure needs refactored in database package to make work again
 func HandleRetrieve() [] string {
 

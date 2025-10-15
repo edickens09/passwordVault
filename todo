@@ -4,3 +4,26 @@ on server create path for each username change code to use username path
 remove newlines from errors and connection methods
 encrypt vaults with client created key and password
 each vault should have clear text header with iud, creation date and encryption data
+
+steps for adding password
+impliment with plain-text first, add encryption later
+"database" of users
+if user exists then check password stored
+if user doesn't exist need to create user
+database of users should only be pulled from server, not created locally
+when creating user, should be created on server then synced locally
+
+on startup try to connect to server
+if successful pull updated user databse
+if unsuccessful allow user to login with local synced database
+
+when logging in get username if exists in database continue with login
+if doesn't exist in database say no user
+give option to create user
+try to connect to server
+if connection successful continue with user creation
+if not successful inform connection issue and to try again later
+eventually user gets approved through email if option is selected to allow that.
+
+impliment user database sqlite?
+in user database should track first name, last name, username, password, creation data, password update date

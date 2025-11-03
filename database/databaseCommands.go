@@ -13,6 +13,7 @@ import(
 type Database struct {
 	username string
 	password string
+	key []byte
 }
 
 // needs refactored no longer using "vault.data"
@@ -71,13 +72,14 @@ func CreateEntry(name string, serviceUsername string, password string) error {
 
 	var data Database
 
-	passwordHash, err := EncryptPassword(password)
+	passwordHash, key, err := EncryptPassword(password)
 	if err != nil {
 		return err
 	}
 	
 	data.username = serviceUsername
 	data.password = passwordHash
+	data.key = key
 
 	//putting this here for future reference this is the username for password manager itself. not for the entry being created
 	username := user.Username
@@ -89,7 +91,9 @@ func CreateEntry(name string, serviceUsername string, password string) error {
 	
 	defer file.Close()
 	
-	fmt.Fprintln(file, data)
+	fmt.Fprintln(file, data.username, data.password)
+	keyString := string(key)
+	fmt.Fprintln(file, keyString)
 	//find a way to check and make sur eit wrote and created an error
 
 	return nil

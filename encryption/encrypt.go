@@ -4,14 +4,49 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
-	"fmt"
+//	"fmt"
 	"io"
 	"os"
-	"bufio"
-	"log"
+//	"bufio"
+//	"log"
+	
 )
 
-func main() {
+func EncryptSting(string string) ([]byte, error) {
+	
+	//make the byte information for both the text input as well as the random generated key
+	text := []byte(string)
+	key := make([]byte, 32)
+	_, err := rand.Read(key)
+	if err != nil {
+		return nil, err
+	}
+	err = os.WriteFile("keyFile.data", key, 0777)
+	if err != nil {
+		return nil, err
+	}
+
+	ciph, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+
+	gcm, err := cipher.NewGCM(ciph)
+	if err != nil {
+		return nil, err
+	}
+
+	nonce := make([]byte, gcm.NonceSize())
+	if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
+		return nil, err
+	}
+
+	encryptedNonce := gcm.Seal(nonce, nonce, text, nil)
+
+
+	return encryptedNonce, nil
+}
+/*func main() {
 
 	logFile, err := os.OpenFile("encryptionLog.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
@@ -60,4 +95,4 @@ func main() {
 
 	fmt.Println("Data Encrypted")
 
-}
+}*/

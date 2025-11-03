@@ -67,38 +67,19 @@ func ListVault() (error) {
 	return nil
 }
 
-func CreateEntry(name string) error {
+func CreateEntry(name string, serviceUsername string, password string) error {
 
 	var data Database
 
-	fmt.Printf("What's the username for %v\n", name)
-	reader := bufio.NewReader(os.Stdin)
-
-	serviceUsername, err := reader.ReadString('\n')
-	if err != nil {
-		return errors.New("error getting username")
-	}
-
-	serviceUsername = strings.TrimSuffix(serviceUsername, "\n")
-
-	fmt.Printf("What's the password for %v\n", name)
-	reader = bufio.NewReader(os.Stdin)
-
-	password, err := reader.ReadString('\n')
-	if err != nil {
-		return errors.New("error getting password")
-	}
-
-	password = strings.TrimSuffix(password, "\n")
-
 	passwordHash, err := EncryptPassword(password)
 	if err != nil {
-		return errors.New("error hashing password")
+		return err
 	}
 	
 	data.username = serviceUsername
 	data.password = passwordHash
 
+	//putting this here for future reference this is the username for password manager itself. not for the entry being created
 	username := user.Username
 	
 	file, err := os.OpenFile("user/" + username + "/" + name + ".vault", os.O_APPEND| os.O_CREATE | os.O_WRONLY, 0644)

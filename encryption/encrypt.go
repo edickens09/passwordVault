@@ -21,11 +21,11 @@ func EncryptString(string string) ([]byte, []byte, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	err = os.WriteFile("keyFile.data", key, 0777)
+/*	err = os.WriteFile("keyFile.data", key, 0777)
 	if err != nil {
 		return nil, nil, err
 	}
-
+*/
 	ciph, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, nil, err

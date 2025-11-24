@@ -28,7 +28,8 @@ func LoginUser() error {
 	}
 
 	Username = strings.TrimSuffix(userName, "\n")
-
+	
+	//this is a recursive statement that prevents the user string from being empty
 	if Username == "" {
 		fmt.Println("Username cannot be an empty string")
 		if err := LoginUser(); err != nil {

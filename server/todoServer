@@ -1,0 +1,5 @@
+need to sink username verify it exists in a database and then do a check for that users vault folder
+Should the database for users be SQL?
+Client needs to send the username to the server. When should this happen?
+Does username need to be sent as a string or should it be sent as bytes?
+Should server be the system that registers a user or should it be the client and then synced to the server

@@ -3,6 +3,8 @@ package user
 import (
 	"fmt"
 	"database/sqlite"
+	"os"
+	"errors"
 )
 
 //parse through database to see if a usernamme exists. If it doesn't should return an error
@@ -20,6 +22,16 @@ func DatabaseUserExists() error {
 	return nil	
 }
 
-func InitalizeDatabase() error {
+func InitalizeDatabase(userDatabase string) error {
+
+	if _, err := os.Stat(userDatabase); errors.Is(err, os.ErrNotExist) {
+		if err := os.MkdirAll(userDatabase, os.ModePerm); err != nil {
+			return err
+		}
+	} else {
+		return err
+	}
+
+	return nil
 
 }

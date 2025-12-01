@@ -9,23 +9,31 @@ import (
 )
 
 //parse through database to see if a usernamme exists. If it doesn't should return an error
-func ParseDatabase() error {
+func PasswordParse(username string, userDatabase string) error {
+	db, err := sql.Open("sqlite3", "./database/" + userDatabase)
+	if err != nil {
+		return err
+	}
+	defer db.Close()
 
 	fmt.Println("This is working to theis point")
 
 	return nil
 }
 
-func DatabaseUserExists() error {
+func UserExists(username string, userDatabase string) error {
+	db, err := sql.Open("sqlite3", "./database/" + userDatabase)
+	if err != nil {
+		return err
+	}
+	defer db.Close()
 
 	fmt.Println("This is working to this point")
 
 	return nil	
 }
 
-/*should be called when client opens and should stay open until client closes
-does the defer db.Close() close the database when the func ends
-maybe this should just check to make sure the database exists and everything necessary
+/* maybe this should just check to make sure the database exists and everything necessary
 is in place instead of trying to edit anything
 */
 func InitalizeDatabase(userDatabase string) error {
@@ -38,7 +46,7 @@ func InitalizeDatabase(userDatabase string) error {
 		return err
 	}
 
-	db, err := sql.Open("sqlite3", "./" + userDatabase)
+	db, err := sql.Open("sqlite3", "./database/" + userDatabase)
 	if err != nil {
 		return err
 	}
@@ -48,7 +56,13 @@ func InitalizeDatabase(userDatabase string) error {
 
 }
 
-func AddUser(userName string) error {
-
+// add the username to the usertable, store it with the salt and hashed password
+func AddUser(username string, userDatabase string) error {
+	db, err := sql.Open("sqlite3", "./database/" + userDatabase)
+	if err != nil {
+		return err
+	}
+	defer db.Close()
 	return nil
 }
+

@@ -7,7 +7,14 @@ import (
 	"os"
 	"strings"
 )
-
+//keep a list of all the service names in the database and a location of the file with necessary info. This will make parsing and looking for services easier 
+func initalizeDatabase(){
+	/* should there be one database that has both the username and the encrypted password stored for comparision
+	as well as the services that are with that username
+	other option could be two seperate databases, one that is username with encrypted password and the other with 
+	username and services that are attached to that username
+*/
+}
 func HandleList() {
 
 	err := ListVault()

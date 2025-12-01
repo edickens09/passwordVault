@@ -2,9 +2,10 @@ package user
 
 import (
 	"fmt"
-	"database/sqlite"
+	"database/sql"
 	"os"
 	"errors"
+	"github.com/mattn/go-sqlite3"
 )
 
 //parse through database to see if a usernamme exists. If it doesn't should return an error
@@ -22,6 +23,11 @@ func DatabaseUserExists() error {
 	return nil	
 }
 
+/*should be called when client opens and should stay open until client closes
+does the defer db.Close() close the database when the func ends
+maybe this should just check to make sure the database exists and everything necessary
+is in place instead of trying to edit anything
+*/
 func InitalizeDatabase(userDatabase string) error {
 
 	if _, err := os.Stat(userDatabase); errors.Is(err, os.ErrNotExist) {
@@ -32,6 +38,17 @@ func InitalizeDatabase(userDatabase string) error {
 		return err
 	}
 
+	db, err := sql.Open("sqlite3", "./" + userDatabase)
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
 	return nil
 
+}
+
+func AddUser(userName string) error {
+
+	return nil
 }

@@ -9,8 +9,8 @@ import (
 )
 
 //parse through database to see if a usernamme exists. If it doesn't should return an error
-func PasswordParse(username string, userDatabase string) error {
-	db, err := sql.Open("sqlite3", "./database/" + userDatabase)
+func PasswordParse(username string, databaseLocation string) error {
+	db, err := sql.Open("sqlite3", databaseLocation)
 	if err != nil {
 		return err
 	}
@@ -21,8 +21,8 @@ func PasswordParse(username string, userDatabase string) error {
 	return nil
 }
 
-func UserExists(username string, userDatabase string) error {
-	db, err := sql.Open("sqlite3", "./database/" + userDatabase)
+func UserExists(username string, databaseLocation string) error {
+	db, err := sql.Open("sqlite3", databaseLocation)
 	if err != nil {
 		return err
 	}
@@ -36,17 +36,17 @@ func UserExists(username string, userDatabase string) error {
 /* maybe this should just check to make sure the database exists and everything necessary
 is in place instead of trying to edit anything
 */
-func InitalizeDatabase(userDatabase string) error {
+func InitalizeDatabase(databaseLocation string) error {
 
-	if _, err := os.Stat(userDatabase); errors.Is(err, os.ErrNotExist) {
-		if err := os.MkdirAll(userDatabase, os.ModePerm); err != nil {
+	if _, err := os.Stat(databaseLocation); errors.Is(err, os.ErrNotExist) {
+		if err := os.MkdirAll(databaseLocation, os.ModePerm); err != nil {
 			return err
 		}
 	} else {
 		return err
 	}
 
-	db, err := sql.Open("sqlite3", "./database/" + userDatabase)
+	db, err := sql.Open("sqlite3", databaseLocation)
 	if err != nil {
 		return err
 	}
@@ -57,8 +57,8 @@ func InitalizeDatabase(userDatabase string) error {
 }
 
 // add the username to the usertable, store it with the salt and hashed password
-func AddUser(username string, userDatabase string) error {
-	db, err := sql.Open("sqlite3", "./database/" + userDatabase)
+func AddUser(username string, databaseLocation string) error {
+	db, err := sql.Open("sqlite3", databaseLocation)
 	if err != nil {
 		return err
 	}

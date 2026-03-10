@@ -26,6 +26,11 @@ func InitialMenu() menu {
 	}
 }
 
+func (m menu) Init() tea.Cmd {
+
+	return nil
+}
+
 func (m menu) View() tea.View {
 	s := "Please make a selection:\n\n"
 
@@ -44,7 +49,39 @@ func (m menu) View() tea.View {
 	return tea.NewView(s)
 }
 
-func (m menu) HandleCommands(conn net.Conn) {
+func (m menu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	
+	switch msg := msg.(type) {
+
+	case tea.KeyPressMsg:
+		switch msg.String() {
+		case "ctrl+c", "q":
+			return m, tea.Quit 
+
+		case "up", "k":
+			if m.cursor > 0 {
+				m.cursor--
+			}
+		case "down", "j":
+			if m.cursor < len(m.choices) - 1 {
+				m.cursor++
+			}
+		}
+
+
+	}
+	return m, nil
+}
+
+func StartApp() {
+	p := tea.NewProgram(InitialMenu())
+	if _, err := p.Run(); err != nil {
+		fmt.Println("There has been an error %v", err)
+		os.Exit(1)
+	}
+} 
+
+func HandleCommands(conn net.Conn) {
 
 	for {
 
@@ -79,7 +116,7 @@ func (m menu) HandleCommands(conn net.Conn) {
 
 		default:
 			fmt.Println("Unknown Command: " + command)
-			continueC
+			continue
 		}
 	}
 }

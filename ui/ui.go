@@ -9,9 +9,42 @@ import (
 
 	connect "github.com/edickens09/passwordVault/connect"
 	database "github.com/edickens09/passwordVault/database"
+
+	tea "charm.land/bubbletea/v2"
 )
 
-func HandleCommands(conn net.Conn) {
+type menu struct {
+	choices []string
+	cursor int
+	selected map[int]struct{}
+}
+
+func InitialMenu() menu {
+	return menu {
+		choices: []string{"Create New Entry", "Search", "Display All",},
+
+	}
+}
+
+func (m menu) View() tea.View {
+	s := "Please make a selection:\n\n"
+
+	for i, choice := range m.choices {
+		cursor := " "
+
+		if m.cursor == i {
+			cursor = "*"
+		}
+
+		s += fmt.Sprintf("[%s] %s\n", cursor,choice)
+	}
+
+	s += "\nPress q to quit\n"
+
+	return tea.NewView(s)
+}
+
+func (m menu) HandleCommands(conn net.Conn) {
 
 	for {
 
@@ -46,7 +79,7 @@ func HandleCommands(conn net.Conn) {
 
 		default:
 			fmt.Println("Unknown Command: " + command)
-			continue
+			continueC
 		}
 	}
 }

@@ -5,7 +5,8 @@ import (
 	"database/sql"
 	"os"
 	"errors"
-	"github.com/mattn/go-sqlite3"
+
+	//"github.com/mattn/go-sqlite3"
 )
 
 //parse through database to see if a usernamme exists. If it doesn't should return an error

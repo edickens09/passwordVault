@@ -1,3 +1,5 @@
+need to start by creating a ui first and foremost
+
 use username on connection
 add password to be used with username
 on server create path for each username change code to use username path
@@ -9,13 +11,12 @@ steps for adding password
 impliment with plain-text first, add encryption later
 "database" of users
 if user exists then check password stored
+password stored as salted hash in user "database"
 if user doesn't exist need to create user
-database of users should only be pulled from server, not created locally
-when creating user, should be created on server then synced locally
+when creating user, should be created locally then synced and verified through server
 
-on startup try to connect to server
-if successful pull updated user databse
-if unsuccessful allow user to login with local synced database
+on startup try server connection, if failed fallback to local by default
+full user vault should live locally and sync to server when given chance
 
 when logging in get username if exists in database continue with login
 if doesn't exist in database say no user
@@ -27,3 +28,8 @@ eventually user gets approved through email if option is selected to allow that.
 
 impliment user database sqlite?
 in user database should track first name, last name, username, password, creation data, password update date
+
+in encrypted blobs should track last alteration. In conflicts last alteration wins, also track change history
+users should be able to see all history of passwords with alteration dates creating the order
+
+should I have a large encryption blob that contains the other encrypted vaults? This would prevent the server from having any useful information and using secret key and password able unencrypt large blob:q

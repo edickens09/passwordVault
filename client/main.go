@@ -6,7 +6,7 @@ import (
 	"log"
 	
 	user "github.com/edickens09/passwordVault/user"
-	connect "github.com/edickens09/passwordVault/connect"
+	//connect "github.com/edickens09/passwordVault/connect"
 	ui "github.com/edickens09/passwordVault/ui"
 
 )
@@ -26,11 +26,12 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	c, err := connect.SyncFromServer()
+	/*c, err := connect.SyncFromServer()
 	if err != nil {
 		fmt.Println(err)
 		log.Println(err)
-	}
+	}*/
 
-	ui.HandleCommands(c)
+	//ui.HandleCommands(c)
+	ui.StartApp()
 }

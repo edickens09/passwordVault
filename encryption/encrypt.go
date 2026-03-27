@@ -6,7 +6,7 @@ import (
 	"crypto/rand"
 //	"fmt"
 	"io"
-	"os"
+//	"os"
 //	"bufio"
 //	"log"
 	

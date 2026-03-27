@@ -7,19 +7,19 @@ import (
 	tea "charm.land/bubbletea/v2"
 )
 
-func MainMenu() RootMenu {
-	return RootMenu {
+func MainMenu() BaseMenu {
+	return BaseMenu {
 		choices: []string{"Entries", "Check Connection", "Settings", "Logout", "Exit"},
 
 	}
 }
 
-func (m RootMenu) Init() tea.Cmd {
+func (m BaseMenu) Init() tea.Cmd {
 
 	return nil
 }
 
-func (m RootMenu) View() tea.View {
+func (m BaseMenu) View() tea.View {
 	s := "Please make a selection:\n\n"
 
 	for i, choice := range m.choices {
@@ -37,7 +37,7 @@ func (m RootMenu) View() tea.View {
 	return tea.NewView(s)
 }
 
-func (m RootMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m BaseMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	
 	switch msg := msg.(type) {
 
@@ -59,7 +59,8 @@ func (m RootMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			switch choice {
 			case "Entries":
-				return m, createEntry
+				entryScreen := EntriesMenu()
+				return m, SwitchModel(entryScreen)
 
 			case "Check Connection":
 				return m, nil
@@ -81,7 +82,7 @@ func (m RootMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func StartApp() {
-	p := tea.NewProgram(MainMenu())
+	p := tea.NewProgram(RootStart())
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("There has been an error %v", err)
 		os.Exit(1)

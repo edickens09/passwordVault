@@ -1,6 +1,8 @@
 package ui
 
 import (
+
+	"fmt"
 	//"github.com/edickens09/passwordVault/database"
 	"github.com/edickens09/passwordVault/connect"
 
@@ -13,12 +15,27 @@ func (m EntryMenu) Init () tea.Cmd {
 
 func (m EntryMenu) View () tea.View {
 
-	s := "This seems to be working"
+	s := "Please make a selection:\n\n"
+
+	for i, choice := range m.choices {
+		cursor := " "
+		
+		if m.cursor == i {
+			cursor = "*"
+		}
+
+		s += fmt.Sprintf("[%s] %s\n", cursor,choice)
+	}
+
+	s += "\nPress q to quit"
+
 	return tea.NewView(s)
 }
+
 func (m EntryMenu) Update (msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
+
 	case tea.KeyPressMsg:
 		switch msg.String() {
 		case "ctrl + c", "q":
@@ -33,7 +50,7 @@ func (m EntryMenu) Update (msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.cursor ++
 			}
 
-		case "Enter":
+		case "enter":
 			choice := m.choices[m.cursor]
 
 			switch choice {
@@ -46,6 +63,10 @@ func (m EntryMenu) Update (msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			case "List":
 				return m, nil
+
+			case "Back":
+				mainMenu := MainMenu()
+				return m, SwitchModel(mainMenu)
 			}
 		}
 	}
@@ -53,6 +74,14 @@ func (m EntryMenu) Update (msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, nil
 
 }
+
+func EntriesMenu() EntryMenu {
+
+	return EntryMenu {
+		choices: []string{"Add Entry", "Search", "List", "Back"},
+	}
+}
+
 func createEntry() tea.Msg {
 
 	//database.HandleCreate()

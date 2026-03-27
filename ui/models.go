@@ -1,6 +1,10 @@
 package ui
 
-type RootMenu struct {
+import (
+	"charm.land/bubbletea/v2"
+)
+
+type BaseMenu struct {
 	choices [] string
 	cursor int
 	selected map[int]struct{}
@@ -12,4 +16,12 @@ type EntryMenu struct {
 	selected map[int]struct{}
 }
 
+type RootModel struct {
+	activeModel tea.Model
+}
+
 type Msg string
+
+type switchMsg struct {
+	next tea.Model
+}

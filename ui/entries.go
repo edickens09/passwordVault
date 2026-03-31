@@ -3,6 +3,7 @@ package ui
 import (
 
 	"fmt"
+
 	//"github.com/edickens09/passwordVault/database"
 	"github.com/edickens09/passwordVault/connect"
 
@@ -56,7 +57,7 @@ func (m EntryMenu) Update (msg tea.Msg) (tea.Model, tea.Cmd) {
 			switch choice {
 
 			case "Add Entry":
-				return m, nil
+				return m, SwitchModel()
 
 			case "Search":
 				return m, nil

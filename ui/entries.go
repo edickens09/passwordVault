@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	//"github.com/edickens09/passwordVault/database"
-	"github.com/edickens09/passwordVault/connect"
+	//"github.com/edickens09/passwordVault/connect"
 
 	tea "charm.land/bubbletea/v2"
 )
@@ -57,7 +57,7 @@ func (m EntryMenu) Update (msg tea.Msg) (tea.Model, tea.Cmd) {
 			switch choice {
 
 			case "Add Entry":
-				return m, SwitchModel()
+				return m, SwitchModel(Entry)
 
 			case "Search":
 				return m, nil
@@ -82,13 +82,4 @@ func EntriesMenu() EntryMenu {
 		choices: []string{"Add Entry", "Search", "List", "Back"},
 	}
 }
-
-func createEntry() tea.Msg {
-
-	//database.HandleCreate()
-	go connect.SyncToServer()
-
-	return Msg("")
-}
-
 

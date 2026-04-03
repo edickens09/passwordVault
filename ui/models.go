@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"charm.land/bubbles/v2/textinput"
 	"charm.land/bubbletea/v2"
 )
 
@@ -30,11 +31,18 @@ type Entry struct {
 
 	Name string
 	EntryType string
-	WebAddress string
 	Username string
 	Password string
-	CreationDate string
-	ModifiedDate string
-	Trash bool
+	WebAddress string
+	//These need to be apart of the database, but not a part of the Entry struct maybe??
+	//CreationDate string
+	//ModifiedDate string
+	//Trash bool
 	Comments string
+}
+
+type EntryText struct {
+
+	focusIndex int
+	inputs []textinput.Model
 }

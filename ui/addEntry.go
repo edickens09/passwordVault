@@ -21,8 +21,8 @@ func (m EntryText) Init() tea.Cmd {
 }
 
 func (m EntryText) View() tea.View {
-
-	s := "Entry menu Working"
+	var s string
+	s = "Entry menu Working"
 	
 	return tea.NewView(s)
 }

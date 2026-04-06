@@ -39,7 +39,7 @@ func (m EntryMenu) Update (msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case tea.KeyPressMsg:
 		switch msg.String() {
-		case "ctrl + c", "q":
+		case "ctrl+c", "q":
 			return m, tea.Quit
 
 		case "up", "k":
@@ -57,7 +57,8 @@ func (m EntryMenu) Update (msg tea.Msg) (tea.Model, tea.Cmd) {
 			switch choice {
 
 			case "Add Entry":
-				return m, SwitchModel(Entry)
+				initialModel := InitialModel()
+				return m, SwitchModel(initialModel)
 
 			case "Search":
 				return m, nil

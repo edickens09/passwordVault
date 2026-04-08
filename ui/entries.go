@@ -10,11 +10,11 @@ import (
 	tea "charm.land/bubbletea/v2"
 )
 
-func (m EntryMenu) Init () tea.Cmd {
+func (m EntryMenu) Init() tea.Cmd {
 	return nil
 }
 
-func (m EntryMenu) View () tea.View {
+func (m EntryMenu) View() tea.View {
 
 	s := "Please make a selection:\n\n"
 
@@ -33,7 +33,7 @@ func (m EntryMenu) View () tea.View {
 	return tea.NewView(s)
 }
 
-func (m EntryMenu) Update (msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m EntryMenu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
 

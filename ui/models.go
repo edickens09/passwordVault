@@ -46,3 +46,15 @@ type EntryText struct {
 	focusIndex int
 	inputs []textinput.Model
 }
+
+type UserText struct {
+
+	focusIndes int
+	inputs []textinput.Model
+}
+
+type UserLogin struct {
+
+	username string
+	password string
+}

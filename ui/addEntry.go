@@ -1,3 +1,4 @@
+//Package ui handles the ui menus and inputs
 package ui
 
 import (
@@ -86,6 +87,7 @@ func InitialModel() EntryText {
 	}
 
 	var text textinput.Model
+
 	text = textinput.New()
 	text.Placeholder = "Name"
 	text.Focus()

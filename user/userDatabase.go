@@ -9,6 +9,12 @@ import (
 	//"github.com/mattn/go-sqlite3"
 )
 
+type User struct {
+
+	Username string
+	Password string
+}
+
 //parse through database to see if a usernamme exists. If it doesn't should return an error
 func PasswordParse(username string, databaseLocation string) error {
 	db, err := sql.Open("sqlite3", databaseLocation)

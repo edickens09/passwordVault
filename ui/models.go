@@ -36,7 +36,7 @@ type EntryText struct {
 
 type UserText struct {
 
-	focusIndes int
+	focusIndex int
 	inputs []textinput.Model
 }
 

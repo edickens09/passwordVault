@@ -5,6 +5,19 @@ import (
 	encrypt "github.com/edickens09/passwordVault/encryption"
 )
 
+type Entry struct {
+
+	Name string
+	EntryType string
+	Username string
+	Password string
+	WebAddress string
+	CreationDate string
+	ModifiedDate string
+	Trash bool
+	Comments string
+}
+
 //rework this so that you can return the byte directly instead of converting to string. Need to refactor other functions first
 func EncryptPassword(password string)(string, []byte, error) {
 	

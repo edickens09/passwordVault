@@ -92,26 +92,32 @@ func InitialModel() EntryText {
 	text.Placeholder = "Name"
 	text.Focus()
 	text.CharLimit = 156
+	text.SetWidth(20)
 	et.inputs[0] = text
 
 	text = textinput.New()
 	text.Placeholder = "Entry Type"
+	text.SetWidth(20)
 	et.inputs[1] = text
 
 	text = textinput.New()
 	text.Placeholder = "Username"
+	text.SetWidth(20)
 	et.inputs[2] = text
 
 	text = textinput.New()
 	text.Placeholder = "Password"
+	text.SetWidth(20)
 	et.inputs[3] = text
 
 	text = textinput.New()
 	text.Placeholder = "Web or ip address"
+	text.SetWidth(20)
 	et.inputs[4] = text
 
 	text = textinput.New()
 	text.Placeholder = "Comments"
+	text.SetWidth(20)
 	et.inputs[5] = text
 
 	return et

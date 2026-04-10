@@ -1,24 +1,25 @@
 package user
 
 import (
-	"fmt"
 	"errors"
 )
 
-func ComparePasswords(password string) error {
+func ComparePasswords(newHash string, databaseHash string) error {
 
-	if password == "" {
+	if newHash == "" {
 		return errors.New("password cannot be empty string")
 	}
 
-	fmt.Println("This looks ok so far: " + password)
+	if newHash != databaseHash {
+		return errors.New("passwords are not the same")
+	}
+
 	return nil
 }
 
 func HashPassword(password string) (string, error) {
 	
 	passwordHash := password+"123"
-	fmt.Println("HashPassword Function call is working " + passwordHash)
 
 	return passwordHash, nil
 }

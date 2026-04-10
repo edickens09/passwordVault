@@ -72,10 +72,12 @@ func (m EntryText) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "q", "ctrl + c":
 			return m, tea.Quit
 
+		case "enter":
+			return m, tea.Quit
 		}
 	}
 
-	cmd := m.updateInputs(msg)
+	cmd := m.UpdateInputs(msg)
 
 	return m, cmd
 } 
@@ -123,7 +125,7 @@ func InitialModel() EntryText {
 	return et
 }
 
-func (m *EntryText) updateInputs(msg tea.Msg) tea.Cmd {
+func (m *EntryText) UpdateInputs(msg tea.Msg) tea.Cmd {
 	cmds := make([]tea.Cmd, len(m.inputs))
 
 	// Only text inputs with Focus() set will respond, so it's safe to simply

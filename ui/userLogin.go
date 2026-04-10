@@ -2,6 +2,8 @@ package ui
 
 import (
 
+	"github.com/edickens09/passwordVault/user"
+
 	"charm.land/bubbles/v2/textinput"
 	tea "charm.land/bubbletea/v2"
 )
@@ -35,6 +37,21 @@ func (m LoginText) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 
 		case "enter":
+
+			userText := m.inputs[0]
+			passText := m.inputs[1]
+
+			userName := userText.Value()
+			password := passText.Value()
+
+			//I should have a check for username in database first then if user is in database check password
+			//these are standins for logic
+			user.CheckUserPath(userName)
+			passHash, err := user.HashPassword(password)
+			if err != nil {
+				//Need to puth something here
+			}
+
 			mainMenu := MainMenu()
 			return m, SwitchModel(mainMenu)
 
@@ -65,7 +82,7 @@ func (m LoginText) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 
-	cmd := m.updateInputs(msg)
+	cmd := m.UpdateInputs(msg)
 
 	return m, cmd
 }
@@ -93,7 +110,7 @@ func LoginUser() LoginText {
 	return et
 }
 
-func (m *LoginText) updateInputs(msg tea.Msg) tea.Cmd {
+func (m *LoginText) UpdateInputs(msg tea.Msg) tea.Cmd {
 
 	cmds := make([]tea.Cmd, len(m.inputs))
 	

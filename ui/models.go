@@ -34,7 +34,7 @@ type EntryText struct {
 	inputs []textinput.Model
 }
 
-type UserText struct {
+type LoginText struct {
 
 	focusIndex int
 	inputs []textinput.Model

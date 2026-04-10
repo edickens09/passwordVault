@@ -6,18 +6,25 @@ import (
 	tea "charm.land/bubbletea/v2"
 )
 
-func (m UserText) Init() tea.Cmd {
+func (m LoginText) Init() tea.Cmd {
 	
 	return textinput.Blink
 }
 
-func (m UserText) View() tea.View {
-	s := "This view is working currently"
+func (m LoginText) View() tea.View {
+
+	s := "Please enter Username and Password\n"
+
+	for i := range m.inputs {
+		s+=m.inputs[i].View() + "\n"
+	}
+
+	s += "\nPress q to quit"
 
 	return tea.NewView(s)
 }
 
-func (m UserText) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m LoginText) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
 
@@ -28,7 +35,8 @@ func (m UserText) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 
 		case "enter":
-			return m, tea.Quit
+			mainMenu := MainMenu()
+			return m, SwitchModel(mainMenu)
 
 		case "tab", "shift+tab", "up", "down":
 			if msg.String() == "up" || msg.String() == "tab" {
@@ -57,11 +65,13 @@ func (m UserText) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 
-	return m, nil
+	cmd := m.updateInputs(msg)
+
+	return m, cmd
 }
 
-func LoginUser() UserText {
-	et := UserText {
+func LoginUser() LoginText {
+	et := LoginText {
 		inputs: make([]textinput.Model, 2),
 	}
 
@@ -81,4 +91,17 @@ func LoginUser() UserText {
 	et.inputs[1] = text
 
 	return et
+}
+
+func (m *LoginText) updateInputs(msg tea.Msg) tea.Cmd {
+
+	cmds := make([]tea.Cmd, len(m.inputs))
+	
+	//Only text inputs Focus() set will respond, so it's safe to simply
+	//update all of them here without any further logic
+	for i := range m.inputs {
+		m.inputs[i], cmds[i] = m.inputs[i].Update(msg)
+	}
+
+	return tea.Batch(cmds...)
 }

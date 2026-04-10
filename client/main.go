@@ -5,7 +5,7 @@ import (
 	"os"
 	"log"
 	
-	user "github.com/edickens09/passwordVault/user"
+//	user "github.com/edickens09/passwordVault/user"
 	ui "github.com/edickens09/passwordVault/ui"
 
 )
@@ -20,10 +20,5 @@ func main() {
 
 	log.SetOutput(file)
 	
-	//this needs sent to the server during the sync to get the correct information
-	if err := user.LoginUser(); err != nil {
-		log.Fatalln(err)
-	}
-
 	ui.StartApp()
 }

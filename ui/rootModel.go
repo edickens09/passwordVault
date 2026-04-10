@@ -36,7 +36,7 @@ func (r RootModel) View() tea.View {
 func RootStart() RootModel {
 
 	return RootModel {
-		activeModel: MainMenu(),
+		activeModel: LoginUser(),
 	}
 
 }

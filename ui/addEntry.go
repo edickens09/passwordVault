@@ -73,7 +73,8 @@ func (m EntryText) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 
 		case "enter":
-			return m, tea.Quit
+			mainMenu := MainMenu()
+			return m, SwitchModel(mainMenu)
 		}
 	}
 

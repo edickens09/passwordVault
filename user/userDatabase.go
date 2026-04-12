@@ -12,7 +12,7 @@ import (
 type User struct {
 
 	Username string
-	Password string
+	PasswordHash string
 }
 
 //parse through database to see if a usernamme exists. If it doesn't should return an error
@@ -64,7 +64,7 @@ func InitalizeDatabase(databaseLocation string) error {
 }
 
 // add the username to the usertable, store it with the salt and hashed password
-func AddUser(username string, databaseLocation string) error {
+func AddUser(username string, databaseLocation string, passwordHash string) error {
 	db, err := sql.Open("sqlite3", databaseLocation)
 	if err != nil {
 		return err

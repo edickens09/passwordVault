@@ -47,9 +47,15 @@ func (m LoginText) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			//I should have a check for username in database first then if user is in database check password
 			//these are standins for logic
 			user.CheckUserPath(userName)
-			passHash, err := user.HashPassword(password)
+			passHash, err := user.HashPassword(password, "123")
 			if err != nil {
-				//Need to puth something here
+				//Need to put something here
+				return m, nil
+			}
+
+			databaseHash = passHash + "123"
+			if err = ComparePasswords(passHash, databaseHash); err != nil {
+				return m, nil
 			}
 
 			mainMenu := MainMenu()

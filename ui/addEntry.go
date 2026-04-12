@@ -3,7 +3,11 @@ package ui
 
 import (
 
+	"time"
+
 	"github.com/edickens09/passwordVault/connect"
+	"github.com/edickens09/passwordVault/database"
+	encrypt "github.com/edickens09/passwordVault/encryption"
 
 	"charm.land/bubbles/v2/textinput"
 	tea "charm.land/bubbletea/v2"
@@ -73,6 +77,45 @@ func (m EntryText) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 
 		case "enter":
+			
+			var NewEntry database.Entry
+			today := Time.Now().UTC()
+
+			if entryName := m.inputs[0].Value(); entryName == "" {
+				//change ui to indicate that blank entry isn't allowed for name
+			}
+
+			if entryType := m.inputs[1].Value(); entryType == "" {
+				//change ui to indicate that blank entry isn't allowed for type
+				//if no type matches use "other" typed
+			}
+
+			entryUsername := m.inputs[2].Value()
+			entryPassword := m.inputs[3].Value()
+			entryURL := m.inputs[4].Value()
+			entryComments := m.inputs[5].Value()
+
+			encryptedPassword, key, err := encrypt.EncryptPassword(entryPassword)
+			if err != nil {
+				//I want to add this error to a log file in addition to changing the ui screen to indicate failure
+				return m, nil 
+			}
+
+			NewEntry.Name = entryName
+			NewEntry.EntryType = entryType
+			NewEntry.Username = entryUsername
+			NewEntry.EncryptedPassword = encryptedPassword
+			NewEntry.WebAddress = entryURL
+			NewEntry.Comments = entryComments
+			NewEntry.CreationDate = today.Format(time.UnixDate)
+			NewEntry.ModifiedDate = today.Format(time.UnixDate)
+
+		if err := CreateEntry(NewEntry); err != nil {
+
+				// I want to add this error to a log file in addition to changing to ui screen to indicate failure
+				return m, nil
+			}
+
 			mainMenu := MainMenu()
 			return m, SwitchModel(mainMenu)
 		}
@@ -94,33 +137,38 @@ func InitialModel() EntryText {
 	text = textinput.New()
 	text.Placeholder = "Name"
 	text.Focus()
-	text.CharLimit = 156
-	text.SetWidth(20)
+	text.CharLimit = 64
+	text.SetWidth(32)
 	et.inputs[0] = text
 
 	text = textinput.New()
 	text.Placeholder = "Entry Type"
-	text.SetWidth(20)
+	text.CharLimit = 64
+	text.SetWidth(32)
 	et.inputs[1] = text
 
 	text = textinput.New()
 	text.Placeholder = "Username"
-	text.SetWidth(20)
+	text.CharLimit = 64
+	text.SetWidth(32)
 	et.inputs[2] = text
 
 	text = textinput.New()
 	text.Placeholder = "Password"
-	text.SetWidth(20)
+	text.CharLimit = 64
+	text.SetWidth(32)
 	et.inputs[3] = text
 
 	text = textinput.New()
 	text.Placeholder = "Web or ip address"
-	text.SetWidth(20)
+	text.CharLimit = 64
+	text.SetWidth(32)
 	et.inputs[4] = text
 
 	text = textinput.New()
 	text.Placeholder = "Comments"
-	text.SetWidth(20)
+	text.CharLimit = 64
+	text.SetWidth(32)
 	et.inputs[5] = text
 
 	return et

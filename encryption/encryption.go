@@ -47,3 +47,29 @@ func EncryptString(string string) ([]byte, []byte, error) {
 	return encryptedNonce, key, nil
 }
 
+//rework this so that it can return direct byte instead of string
+func EncryptPassword (password string)(string, []byte, error) {
+
+	encryptedPassword, key, err := EncryptString(password)
+	if err != nil {
+		return "", nil, err
+	}
+
+	encryptedPasswordString := string(encryptedPassword)
+
+	return encryptedPasswordString, key, nil
+}
+
+func DecryptPassword (encryptedPassword string, key string) (string, error) {
+	//placeholder function for decrypting password
+	decryptedString, err := DecryptString(encryptedPassword, key)
+	if err != nil {
+		return "", err
+	}
+
+	return decryptedString, nil
+}
+
+func DecryptString (string string, key string) (string, error) {
+	//placeholder function for decrypting string
+}

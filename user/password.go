@@ -17,9 +17,10 @@ func ComparePasswords(newHash string, databaseHash string) error {
 	return nil
 }
 
-func HashPassword(password string) (string, error) {
+//standin function for actual hashing
+func HashPassword(password string, salt string) (string, error) {
 	
-	passwordHash := password+"123"
+	passwordHash := password+salt
 
 	return passwordHash, nil
 }

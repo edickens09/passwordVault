@@ -6,6 +6,8 @@ import (
 	"bufio"
 	"os"
 	"strings"
+
+	//"github.com/mattn/go-sqlite3"
 )
 //keep a list of all the service names in the database and a location of the file with necessary info. This will make parsing and looking for services easier 
 func initalizeDatabase(){
@@ -52,39 +54,4 @@ func HandleRetrieve() [] string {
 	return data
 }
 
-// this needs to be refactored so that it gets all the information and then passes it to a seperate function that creates the vault file not how it works currently.
-func HandleCreate() {
 
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Service Name: ")
-
-	serviceName, err := reader.ReadString('\n')
-	if err != nil {
-		log.Println(err)
-	}
-
-	serviceName = strings.TrimSuffix(serviceName, "\n")
-
-	fmt.Printf("What is the username for %v:\n", serviceName)
-
-	username, err := reader.ReadString('\n')
-	if err != nil {
-		log.Println(err)
-	}
-	username = strings.TrimSuffix(username, "\n")
-
-	fmt.Printf("What is the password for %v:\n", serviceName)
-
-	password, err := reader.ReadString('\n')
-	if err != nil {
-		log.Println(err)
-	}
-	password = strings.TrimSuffix(password, "\n")
-
-
-	if err := CreateEntry(serviceName, username, password); err != nil {
-		fmt.Println("\nVault error check logs for more detail")
-		log.Fatalln(err)
-		return
-	}
-}

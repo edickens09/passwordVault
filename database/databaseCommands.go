@@ -67,7 +67,7 @@ func ListVault() (error) {
 
 	return nil
 }
-
+/*
 func CreateEntry(name string, serviceUsername string, password string) error {
 
 	var data Database
@@ -98,3 +98,4 @@ func CreateEntry(name string, serviceUsername string, password string) error {
 
 	return nil
 }
+*/

@@ -2,7 +2,8 @@ package database
 
 import (
 	"fmt"
-	encrypt "github.com/edickens09/passwordVault/encryption"
+
+	//"github.com/mattn/go-sqlite3"
 )
 
 type Entry struct {
@@ -10,7 +11,8 @@ type Entry struct {
 	Name string
 	EntryType string
 	Username string
-	Password string
+	EncryptedPassword string
+	PasswordKey string
 	WebAddress string
 	CreationDate string
 	ModifiedDate string
@@ -18,15 +20,20 @@ type Entry struct {
 	Comments string
 }
 
-//rework this so that you can return the byte directly instead of converting to string. Need to refactor other functions first
-func EncryptPassword(password string)(string, []byte, error) {
-	
-	passwordHash, key, err := encrypt.EncryptString(password)
-	if err != nil {
-		return "", nil, err
-	}
-	passwordHashString := string(passwordHash)
-	fmt.Println("Database Encrypt Password is working " + passwordHashString)
+func CreateEntry(NewEntry Entry) error {
 
-	return passwordHashString, key, nil
+	/*
+	NewEntry.Name enters database
+	NewEntry.EntryType enters database
+	NewEntry.Username enters database
+	NewEntry.EncryptedPassword enters database
+	NewEntry.PasswordKey enters database
+	NewEntry.WebAddress enters database
+	NewEntry.CreationData enters database
+	NewEntry.ModifiedDate enters database
+	NewEntry.Comments enters database
+	*/
+
+
+	return nil
 }

@@ -1,8 +1,8 @@
 need to start by creating a ui first and foremost
+no server yet
 
 use username on connection
 add password to be used with username
-on server create path for each username change code to use username path
 remove newlines from errors and connection methods
 encrypt vaults with client created key and password
 each vault should have clear text header with iud, creation date and encryption data
@@ -13,10 +13,6 @@ impliment with plain-text first, add encryption later
 if user exists then check password stored
 password stored as salted hash in user "database"
 if user doesn't exist need to create user
-when creating user, should be created locally then synced and verified through server
-
-on startup try server connection, if failed fallback to local by default
-full user vault should live locally and sync to server when given chance
 
 when logging in get username if exists in database continue with login
 if doesn't exist in database say no user

@@ -5,7 +5,7 @@ import (
 
 	"time"
 
-	"github.com/edickens09/passwordVault/connect"
+	//"github.com/edickens09/passwordVault/connect"
 	"github.com/edickens09/passwordVault/database"
 	encrypt "github.com/edickens09/passwordVault/encryption"
 
@@ -13,13 +13,13 @@ import (
 	tea "charm.land/bubbletea/v2"
 )
 
-func CreateEntry() tea.Msg {
+/*func CreateEntry() tea.Msg {
 
 	//database.HandleCreate
 	go connect.SyncToServer()
 
 	return Msg("")
-}
+}*/
 
 func (m EntryText) Init() tea.Cmd {
 	return textinput.Blink
@@ -79,13 +79,16 @@ func (m EntryText) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			
 			var NewEntry database.Entry
-			today := Time.Now().UTC()
+                        var entryName string
+                        var entryType string
 
-			if entryName := m.inputs[0].Value(); entryName == "" {
+			today := time.Now().UTC()
+
+			if entryName = m.inputs[0].Value(); entryName == "" {
 				//change ui to indicate that blank entry isn't allowed for name
 			}
 
-			if entryType := m.inputs[1].Value(); entryType == "" {
+			if entryType = m.inputs[1].Value(); entryType == "" {
 				//change ui to indicate that blank entry isn't allowed for type
 				//if no type matches use "other" typed
 			}
@@ -110,7 +113,7 @@ func (m EntryText) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			NewEntry.CreationDate = today.Format(time.UnixDate)
 			NewEntry.ModifiedDate = today.Format(time.UnixDate)
 
-		if err := CreateEntry(NewEntry); err != nil {
+		if err := database.CreateEntry(NewEntry); err != nil {
 
 				// I want to add this error to a log file in addition to changing to ui screen to indicate failure
 				return m, nil

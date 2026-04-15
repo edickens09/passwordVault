@@ -53,8 +53,8 @@ func (m LoginText) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, nil
 			}
 
-			databaseHash = passHash + "123"
-			if err = ComparePasswords(passHash, databaseHash); err != nil {
+                        databaseHash := passHash + "123"
+			if err = user.ComparePasswords(passHash, databaseHash); err != nil {
 				return m, nil
 			}
 

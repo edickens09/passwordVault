@@ -16,18 +16,6 @@ type User struct {
 }
 
 //parse through database to see if a usernamme exists. If it doesn't should return an error
-func PasswordParse(username string, databaseLocation string) error {
-	db, err := sql.Open("sqlite3", databaseLocation)
-	if err != nil {
-		return err
-	}
-	defer db.Close()
-
-	fmt.Println("This is working to theis point")
-
-	return nil
-}
-
 func UserExists(username string, databaseLocation string) error {
 	db, err := sql.Open("sqlite3", databaseLocation)
 	if err != nil {

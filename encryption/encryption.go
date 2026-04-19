@@ -72,4 +72,5 @@ func DecryptPassword (encryptedPassword string, key string) (string, error) {
 
 func DecryptString (string string, key string) (string, error) {
 	//placeholder function for decrypting string
+	return "", nil
 }

@@ -25,3 +25,19 @@ func CheckUserPath(username string) {
 		}
 	}
 }
+
+func LoginUser(username string, password string) error {
+
+	passHash, err := HashPassword(password, []byte("123"), []byte("123"))
+	if err != nil {
+		return err
+	}
+
+	databaseHash := password + "123" + "123"
+	if err := ComparePasswords(username, passHash); err != nil {
+		return err
+	}
+	//takes the username and passwordHash if they match the entry in the database then return nil
+
+	return nil
+}

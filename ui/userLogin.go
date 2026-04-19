@@ -44,22 +44,16 @@ func (m LoginText) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			userName := userText.Value()
 			password := passText.Value()
 
-			//I should have a check for username in database first then if user is in database check password
-			//these are standins for logic
+			//check for err and only continue to login if err is equal to nil
+			if err := user.LoginUser(userName, password); err == nil {
+				mainMenu := MainMenu()
+				return m, SwitchModel(mainMenu)
+			}
+
 			user.CheckUserPath(userName)
-			passHash, err := user.HashPassword(password, "123")
-			if err != nil {
-				//Need to put something here
-				return m, nil
-			}
-
-            databaseHash := passHash + "123"
-			if err = user.ComparePasswords(passHash, databaseHash); err != nil {
-				return m, nil
-			}
-
-			mainMenu := MainMenu()
-			return m, SwitchModel(mainMenu)
+			
+			loginUser := LoginUser()
+			return m, SwitchModel(loginUser)
 
 		case "tab", "shift+tab", "up", "down":
 			if msg.String() == "up" || msg.String() == "tab" {

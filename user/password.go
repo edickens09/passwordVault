@@ -3,6 +3,9 @@ package user
 import (
 	"bytes"
 	"errors"
+	"crypto/sha3"
+
+	"golang.org/x/crypto/argon2"
 )
 
 //Function CompaarePasswords needs to pull a databaseHash and not rely on passing the databaseHash, it should do this with a username string
@@ -22,11 +25,14 @@ func ComparePasswords(username string, newHash []byte) error {
 	return nil
 }
 
-//standin function for actual hashing
+//creates 64 byte masterHash that can be split to 2 32 byte hashes for other things might change later depending what I learn
 func HashPassword(password string, salt []byte, pepper []byte) ([]byte, error) {
-	
-	inputBytes := append([]byte(password), salt...)
-	inputBytes = append(inputBytes, pepper...)
+	h := sha3.New256()
+	h.Write(pepper)
+	h.Write([]byte(password))
+	pepperedPassword := h.Sum(nil)
 
-	return inputBytes, nil
+	masterHash := argon2.IDKey(pepperedPassword, salt, 3, 64*1024, 4, 64)
+
+	return masterHash, nil
 }

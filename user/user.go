@@ -10,12 +10,12 @@ import (
 var Username = "" 
 
 // this needs a way to verify to the server as well as locally. 
-// if using same for both server side doesn't necessarily need user.CheckUserPath()
 
 /* does a check if the database exists, if that doesn't return an error then parses through the database
 if that doesn't return an error then it check the password in database in comparision to the password input
 if the salted hashes match then it will return nil*/
 
+// CheckUserPath checks directory for user and creates it if not found
 func CheckUserPath(username string) {
 
 	if _, err := os.Stat("user/" + username + "/"); errors.Is(err, os.ErrNotExist) {
@@ -33,7 +33,6 @@ func LoginUser(username string, password string) error {
 		return err
 	}
 
-	databaseHash := password + "123" + "123"
 	if err := ComparePasswords(username, passHash); err != nil {
 		return err
 	}

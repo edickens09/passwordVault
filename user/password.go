@@ -8,11 +8,12 @@ import (
 	"golang.org/x/crypto/argon2"
 )
 
-//Function CompaarePasswords needs to pull a databaseHash and not rely on passing the databaseHash, it should do this with a username string
+//ComparePasswords needs to pull a databaseHash and not rely on passing the databaseHash, it should do this with a username string
 func ComparePasswords(username string, newHash []byte) error {
 
-	//this is a temp area to creat the base of the logic this will be removed in the futur for actual functionality
-	databaseHash := []byte("Test" + "123" + "123")
+	//this is a temp area to creat the base of the logic this will be removed in the future for actual functionality
+	databaseHash, _ := HashPassword("Test", []byte("123"), []byte("123"))
+
 
 	if len(newHash) == 0 {
 		return errors.New("password cannot be empty string")
@@ -25,7 +26,7 @@ func ComparePasswords(username string, newHash []byte) error {
 	return nil
 }
 
-//creates 64 byte masterHash that can be split to 2 32 byte hashes for other things might change later depending what I learn
+//HashPassword creates 64 byte masterHash that can be split to 2 32 byte hashes for other things might change later depending what I learn
 func HashPassword(password string, salt []byte, pepper []byte) ([]byte, error) {
 	h := sha3.New256()
 	h.Write(pepper)

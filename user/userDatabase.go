@@ -21,16 +21,18 @@ type Db struct {
 const UserDB = "userDb"
 
 //parse through database to see if a usernamme exists. If it doesn't should return an error
-func UserExists(username string, databaseLocation string) error {
-	db, err := sql.Open("sqlite3", databaseLocation)
+func UserExists(username string, db *Db) (bool, error) {
+
+	query := fmt.Sprintf("SELECT * FROM %s WHERE user = ?", UserDB)
+
+	user, err := db.db.Query(query, username)
 	if err != nil {
-		return err
+		return false, err
 	}
-	defer db.Close()
 
-	fmt.Println("This is working to this point")
+	defer user.Close()
 
-	return nil	
+	return true, nil	
 }
 
 /* maybe this should just check to make sure the database exists and everything necessary
